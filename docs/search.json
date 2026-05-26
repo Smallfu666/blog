@@ -1,23 +1,184 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "adrs-systems-research-talk-index.html",
+    "href": "adrs-systems-research-talk-index.html",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
     "section": "",
-    "text": "About\nHan-Yin Chang · NTHU CS · GitHub\nThis blog covers database systems, storage engines, and things I learn along the way.\nBuilt with Quarto."
+    "text": "ADRS SYSTEMS RESEARCH TALK\n\n\nWhen AI makes candidate solutions cheap, the scarce resource in systems research is no longer merely implementation effort. The scarce resource becomes judgment: choosing the right problem, building the right evaluator, and proving that the observed improvement is real."
   },
   {
-    "objectID": "posts/adrs-systems-research-talk/index.html",
-    "href": "posts/adrs-systems-research-talk/index.html",
-    "title": "When AI Writes the Solutions, Who Writes the Questions?",
-    "section": "",
-    "text": "Paper meeting · ADRS · systems research\n\n\nWhen AI Writes the Solutions, Who Writes the Questions?\n\n\nA long-form reading guide for Barbarians at the Gate: How AI is Upending Systems Research. Figures are the anchor, but the surrounding text gives enough context for discussion.\n\n\nPrepared by Han-Yin Chang · NTHU CS\n\n\n\nWorking thesis. ADRS does not make research automatic. It moves the bottleneck from manually writing every solution to defining the problem, constructing the evaluator, and deciding whether a result contains real insight.\n\n\n\nworkflow ADRS loop cases transaction scheduling failure modes limits my workflow collaboration references\n\n\n\n\n\n\n\nWhat the paper is really about\n\n\nThe paper’s scope is narrower than “AI writes a whole systems paper.” It argues that systems research is unusually compatible with AI-driven solution discovery because many systems problems have executable verification: a candidate can be placed in a simulator or real system, run on workloads, and measured against a baseline.[P]\n\n\nMarc Brooker makes the same point from a software-engineering angle: the next decade may be shaped by how well we build reliable verifiers, and testing becomes central when AI can optimize rapidly against a target.[B]\n\n\n\nLLMs generate candidate mutations. The evaluator performs natural selection.\n\n\n\n\n\n\n\n\n\nResearch workflow: what ADRS does and does not automate\n\n\nThe paper decomposes systems research into five stages: problem formulation, evaluation framework, solution, evaluation, and paper write-up. ADRS targets only the middle loop: solution and evaluation.[P]\n\n\n\n\n\n\nFigure 1. ADRS targets the Solution and Evaluation stages, not the whole research process.\n\n\n\n\n\nThis boundary matters. The paper is not claiming that problem selection, benchmark design, interpretation, or paper writing are solved. If anything, those parts become more important because the inner loop becomes cheaper.\n\n\n\n\n\n\n\n\nWhy this inner loop is tempting to automate\n\n\nThe paper motivates ADRS by arguing that algorithm design and evaluation consume a large fraction of systems research time. The exact number should not be overread; the survey is small. But the direction is plausible: a lot of research time is spent trying candidate methods and measuring whether they work.\n\n\n\n\n\n\nFigure 2. Algorithm Design and Evaluation together exceed 40% in the paper’s survey.\n\n\n\n\n\nThe hidden cost is important. The reported automation time does not fully capture human effort in refining prompts, constructing evaluators, debugging the setup, or deciding what the result means. This is where a critical reading should not become marketing.\n\n\n\n\n\n\n\n\nThe ADRS loop\n\n\nFigure 3 is the central figure. A prompt generator packages the problem and context; a solution generator uses LLMs to produce candidates; an evaluator scores them; storage records the trajectory; and a solution selector chooses what to keep exploring.[P]\n\n\n\n\n\n\nFigure 3. The ADRS loop is generate → evaluate → store → select, with optional human outer-loop guidance.\n\n\n\n\n\nThe most important object in this diagram is not the LLM. It is the evaluator. Without a good evaluator, the loop merely produces fluent-looking artifacts. With a good evaluator, the loop becomes a search process over executable solutions.\n\n\n\nIf the evaluator is wrong, the loop does not become slower. It becomes confidently wrong faster.\n\n\n\n\n\n\n\n\n\nThe case studies: useful evidence, not a clean leaderboard\n\n\nTable 1 reports 11 tasks across systems, databases, networking, and ML systems. It is useful because it shows that the ADRS pattern can be applied in several places. But I would not present it as a clean leaderboard: the paper notes that different students ran the studies in parallel with different configurations and without extensive ablations.[P]\n\n\n\n\n\n\nTable 1. Evidence map, not a universal proof that “AI beats SOTA.”\n\n\n\n\n\nBefore showing before/after code, each case needs a short problem statement. Otherwise the audience only sees code snippets without knowing what the algorithm is trying to optimize.\n\n\n\n\n\nCan’t Be Late: deadline scheduling with unreliable cheap spot instances\n\n\nThe system wants to run jobs cheaply using spot instances, but spot instances can disappear. The policy must save cost while still meeting deadlines. The evaluator checks deadline validity and cost savings over traces.\n\n\n\n\nMoE Expert Placement: balance expert load across GPUs\n\n\nThe system must place expert replicas across GPUs so that token load is balanced. The reported improvement comes from replacing Python-loop placement with tensorized zigzag placement.\n\n\n\n\nLLM-SQL: reorder table rows and fields for KV-cache reuse\n\n\nSQL-style analytics invokes LLM inference row by row. Reordering rows and fields can increase shared prompt prefixes, improving prefix cache hit rate. The evolved solution preserves hit rate while reducing reordering runtime.\n\n\n\n\nTransaction Scheduling: reorder transactions to reduce conflicts\n\n\nTransaction conflicts create bottlenecks. The goal is to schedule transactions so the makespan is minimized. This case is especially useful because online ADRS only rediscovers SOTA, while offline ADRS explores a new heavier search variant."
+    "objectID": "adrs-systems-research-talk-index.html#executive-summary",
+    "href": "adrs-systems-research-talk-index.html#executive-summary",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "Executive summary",
+    "text": "Executive summary\nAI is changing systems research because it attacks the part of the workflow that used to consume most of the calendar time: generating plausible implementations, variations, scripts, and experimental scaffolding. That does not make systems research easier. It moves the hard part upstream and downstream.\nUpstream, the researcher must define a sharper problem. Downstream, the researcher must build a stricter evaluator. If the evaluator is weak, AI will happily produce a beautiful-looking answer that is wrong, irrelevant, or impossible to reproduce.\n\n\n\n\n\n\nNoteCore claim\n\n\n\nThe future systems researcher is less like a lone craftsperson writing one perfect artifact by hand, and more like an architect of search spaces, constraints, and evaluators."
+  },
+  {
+    "objectID": "adrs-systems-research-talk-index.html#the-old-bottleneck-producing-one-credible-solution",
+    "href": "adrs-systems-research-talk-index.html#the-old-bottleneck-producing-one-credible-solution",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "The old bottleneck: producing one credible solution",
+    "text": "The old bottleneck: producing one credible solution\nTraditional systems research often looked like this:\n\nIdentify a performance, scalability, reliability, or usability problem.\nDesign a new mechanism.\nImplement the mechanism inside a real or realistic system.\nBenchmark it against baselines.\nExplain why the result generalizes.\n\nThe expensive part was often step 2 and step 3. Writing kernel code, database operators, schedulers, compilers, runtimes, storage engines, or distributed protocols takes time. The code is brittle. The experimental setup is brittle. The reproduction story is brittle.\nBecause implementation was expensive, researchers tended to explore only a small number of designs. A paper might present one main mechanism, a few ablations, and enough experiments to support the claim. That was already difficult work."
+  },
+  {
+    "objectID": "adrs-systems-research-talk-index.html#the-new-bottleneck-evaluating-many-plausible-solutions",
+    "href": "adrs-systems-research-talk-index.html#the-new-bottleneck-evaluating-many-plausible-solutions",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "The new bottleneck: evaluating many plausible solutions",
+    "text": "The new bottleneck: evaluating many plausible solutions\nAI changes the cost structure. It can generate candidate designs, implementation sketches, benchmark scripts, plots, summaries, and even reviewer-style critiques. The problem is not that these outputs are always correct. The problem is that they are often plausible enough to consume attention.\nThat creates a different bottleneck:\n\nCan we tell which generated ideas are actually new?\nCan we distinguish a real systems improvement from measurement noise?\nCan we detect when a benchmark is unfair?\nCan we prevent the model from optimizing toward the appearance of evidence rather than evidence itself?\nCan we turn a vague research direction into a closed-loop experimental process?\n\nThe answer is not “trust the model.” The answer is to make the evaluator stronger than the generator."
+  },
+  {
+    "objectID": "adrs-systems-research-talk-index.html#why-systems-research-is-especially-exposed",
+    "href": "adrs-systems-research-talk-index.html#why-systems-research-is-especially-exposed",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "Why systems research is especially exposed",
+    "text": "Why systems research is especially exposed\nSystems research has a strange property: many wrong answers look good until they touch a real workload.\nA proposed optimization may sound correct in prose, compile successfully, and pass a toy test. Then it fails under contention, cache pressure, NUMA effects, scheduler noise, GPU occupancy limits, tail latency, memory fragmentation, or a workload distribution that the author did not test.\nThis is why systems papers are not judged by elegance alone. They are judged by artifacts, measurements, baselines, ablations, and the credibility of the experimental story.\nAI-generated systems work therefore needs stricter discipline, not less discipline.\n\n\n\n\n\n\nWarningBad failure mode\n\n\n\nThe dangerous workflow is: ask AI for an idea, accept a plausible implementation, run a narrow benchmark, then write a confident story around the result.\nThat is not research. That is benchmark-shaped fiction."
+  },
+  {
+    "objectID": "adrs-systems-research-talk-index.html#the-evaluator-becomes-the-research-instrument",
+    "href": "adrs-systems-research-talk-index.html#the-evaluator-becomes-the-research-instrument",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "The evaluator becomes the research instrument",
+    "text": "The evaluator becomes the research instrument\nA useful AI-driven systems workflow should treat the evaluator as a first-class artifact.\nThe evaluator should define:\n\nthe workload distribution;\nthe correctness oracle;\nthe baseline policy;\nthe measurement protocol;\nthe allowed search space;\nthe hardware and software environment;\nthe stopping rule for failed ideas;\nthe evidence threshold for claiming a result.\n\nThis changes the role of the researcher. The researcher does not merely ask for answers. The researcher designs the cage in which answers are allowed to compete.\nA weak evaluator rewards clever stories. A strong evaluator rewards mechanisms that survive contact with reality."
+  },
+  {
+    "objectID": "adrs-systems-research-talk-index.html#what-adrs-style-research-is-trying-to-do",
+    "href": "adrs-systems-research-talk-index.html#what-adrs-style-research-is-trying-to-do",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "What ADRS-style research is trying to do",
+    "text": "What ADRS-style research is trying to do\nAn AI-driven research system should not be a chatbot that occasionally writes code. It should be a loop.\nproblem definition\n      ↓\nhypothesis generation\n      ↓\nimplementation attempt\n      ↓\ncorrectness gate\n      ↓\nbenchmark gate\n      ↓\nprofiling / diagnosis\n      ↓\nrevision or rejection\n      ↓\nresearch claim\nThe key is that every transition must be constrained. The model can propose. The system must verify. The researcher must decide.\nFor systems research, the loop must be grounded in real artifacts: code, traces, counters, benchmark logs, plots, and reproducible commands. Otherwise, the system is only producing text about research rather than research itself."
+  },
+  {
+    "objectID": "adrs-systems-research-talk-index.html#what-changes-in-paper-writing",
+    "href": "adrs-systems-research-talk-index.html#what-changes-in-paper-writing",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "What changes in paper writing",
+    "text": "What changes in paper writing\nAI also changes how papers are written, but not in the naive sense that “AI writes the paper.” The more important shift is that AI can compress the iteration loop between result, interpretation, and critique.\nA useful workflow might be:\n\nRun the experiment.\nStore raw logs and metadata.\nGenerate a first interpretation.\nAsk for hostile review.\nCheck every claim against the artifact.\nRewrite only the claims that survive.\n\nThe paper becomes a projection of an evidence graph. Claims should trace back to experiments. Experiments should trace back to commands. Commands should trace back to versioned code and environment metadata.\nIf that chain breaks, the paper is fragile."
+  },
+  {
+    "objectID": "adrs-systems-research-talk-index.html#what-does-not-change",
+    "href": "adrs-systems-research-talk-index.html#what-does-not-change",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "What does not change",
+    "text": "What does not change\nAI does not remove the need for taste.\nIt does not decide whether a problem matters. It does not know whether a baseline is socially accepted by a research community. It does not automatically understand whether a 2× speedup is meaningful, whether a 5% regression is fatal, or whether a negative result is actually the more interesting story.\nThose are research judgments.\nThe systems researcher still needs to understand the machine: the operating system, the compiler, the memory hierarchy, the network, the storage device, the GPU, the scheduler, and the workload. AI can generate a map, but the territory still has cliffs."
+  },
+  {
+    "objectID": "adrs-systems-research-talk-index.html#practical-implications",
+    "href": "adrs-systems-research-talk-index.html#practical-implications",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "Practical implications",
+    "text": "Practical implications\nFor a student or early researcher, the lesson is uncomfortable but useful.\nDo not use AI to avoid hard thinking. Use it to expose more hard thinking than you could have reached alone.\nA good AI-assisted workflow should make you more empirical, not more theatrical. It should produce more failed hypotheses, more ablations, more profiling evidence, and more precise claims. If it only produces smoother prose, it is decoration.\nThe minimum standard should be:\n\nevery major claim has an artifact;\nevery artifact has a command;\nevery command has an environment;\nevery result has a baseline;\nevery baseline has a fairness argument;\nevery surprising result has a profiling explanation or a caveat."
+  },
+  {
+    "objectID": "adrs-systems-research-talk-index.html#a-better-mental-model",
+    "href": "adrs-systems-research-talk-index.html#a-better-mental-model",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "A better mental model",
+    "text": "A better mental model\nThe old model of systems research was often:\nhuman insight → implementation → benchmark → paper\nThe newer model is closer to:\nhuman taste → constrained search → automated trials → evaluator → evidence graph → paper\nThe human does not disappear. The human moves to a more severe position: defining what counts as evidence."
+  },
+  {
+    "objectID": "adrs-systems-research-talk-index.html#closing",
+    "href": "adrs-systems-research-talk-index.html#closing",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "Closing",
+    "text": "Closing\nThe barbarians at the gate are not simply AI agents writing code. The real disruption is that solution generation becomes cheap enough to flood the research process with plausible artifacts.\nWhen that happens, the decisive skill is not producing more plausible artifacts. It is building the discipline to reject most of them.\nSystems research survives this transition by becoming more empirical, more reproducible, and more evaluator-centered. The work does not become easier. The blade just moves closer to the bone."
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Blog",
     "section": "",
-    "text": "Thoughts on database systems, storage engines, and computer science education. Built with Quarto and hosted on GitHub Pages.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWhen AI Writes the Solutions, Who Writes the Questions?\n\n\n\nADRS\n\nSystems Research\n\nAI-assisted Research\n\n\n\nA reading guide for Barbarians at the Gate: How AI is Upending Systems Research\n\n\n\n\n\n2026-03-22\n\n\nHan-Yin Chang\n\n\n\n\n\nNo matching items"
+    "text": "Thoughts on database systems, storage engines, and computer science education. Built with Quarto and hosted on GitHub Pages.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nBarbarians at the Gate: How AI is Upending Systems Research\n\n\nADRS Systems Research Talk\n\n\n\nADRS\n\nSystems Research\n\nAI-assisted Research\n\n\n\nA clean Quarto version of a talk note on AI-driven systems research, evaluator design, and the changing role of systems researchers.\n\n\n\n\n\n2026-05-26\n\n\nSmallfu666\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "posts/adrs-systems-research-talk/index.html",
+    "href": "posts/adrs-systems-research-talk/index.html",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "",
+    "text": "ADRS SYSTEMS RESEARCH TALK\n\n\nWhen AI makes candidate solutions cheap, the scarce resource in systems research is no longer merely implementation effort. The scarce resource becomes judgment: choosing the right problem, building the right evaluator, and proving that the observed improvement is real."
+  },
+  {
+    "objectID": "posts/adrs-systems-research-talk/index.html#executive-summary",
+    "href": "posts/adrs-systems-research-talk/index.html#executive-summary",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "Executive summary",
+    "text": "Executive summary\nAI is changing systems research because it attacks the part of the workflow that used to consume most of the calendar time: generating plausible implementations, variations, scripts, and experimental scaffolding. That does not make systems research easier. It moves the hard part upstream and downstream.\nUpstream, the researcher must define a sharper problem. Downstream, the researcher must build a stricter evaluator. If the evaluator is weak, AI will happily produce a beautiful-looking answer that is wrong, irrelevant, or impossible to reproduce.\n\n\n\n\n\n\nNoteCore claim\n\n\n\nThe future systems researcher is less like a lone craftsperson writing one perfect artifact by hand, and more like an architect of search spaces, constraints, and evaluators."
+  },
+  {
+    "objectID": "posts/adrs-systems-research-talk/index.html#the-old-bottleneck-producing-one-credible-solution",
+    "href": "posts/adrs-systems-research-talk/index.html#the-old-bottleneck-producing-one-credible-solution",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "The old bottleneck: producing one credible solution",
+    "text": "The old bottleneck: producing one credible solution\nTraditional systems research often looked like this:\n\nIdentify a performance, scalability, reliability, or usability problem.\nDesign a new mechanism.\nImplement the mechanism inside a real or realistic system.\nBenchmark it against baselines.\nExplain why the result generalizes.\n\nThe expensive part was often step 2 and step 3. Writing kernel code, database operators, schedulers, compilers, runtimes, storage engines, or distributed protocols takes time. The code is brittle. The experimental setup is brittle. The reproduction story is brittle.\nBecause implementation was expensive, researchers tended to explore only a small number of designs. A paper might present one main mechanism, a few ablations, and enough experiments to support the claim. That was already difficult work."
+  },
+  {
+    "objectID": "posts/adrs-systems-research-talk/index.html#the-new-bottleneck-evaluating-many-plausible-solutions",
+    "href": "posts/adrs-systems-research-talk/index.html#the-new-bottleneck-evaluating-many-plausible-solutions",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "The new bottleneck: evaluating many plausible solutions",
+    "text": "The new bottleneck: evaluating many plausible solutions\nAI changes the cost structure. It can generate candidate designs, implementation sketches, benchmark scripts, plots, summaries, and even reviewer-style critiques. The problem is not that these outputs are always correct. The problem is that they are often plausible enough to consume attention.\nThat creates a different bottleneck:\n\nCan we tell which generated ideas are actually new?\nCan we distinguish a real systems improvement from measurement noise?\nCan we detect when a benchmark is unfair?\nCan we prevent the model from optimizing toward the appearance of evidence rather than evidence itself?\nCan we turn a vague research direction into a closed-loop experimental process?\n\nThe answer is not “trust the model.” The answer is to make the evaluator stronger than the generator."
+  },
+  {
+    "objectID": "posts/adrs-systems-research-talk/index.html#why-systems-research-is-especially-exposed",
+    "href": "posts/adrs-systems-research-talk/index.html#why-systems-research-is-especially-exposed",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "Why systems research is especially exposed",
+    "text": "Why systems research is especially exposed\nSystems research has a strange property: many wrong answers look good until they touch a real workload.\nA proposed optimization may sound correct in prose, compile successfully, and pass a toy test. Then it fails under contention, cache pressure, NUMA effects, scheduler noise, GPU occupancy limits, tail latency, memory fragmentation, or a workload distribution that the author did not test.\nThis is why systems papers are not judged by elegance alone. They are judged by artifacts, measurements, baselines, ablations, and the credibility of the experimental story.\nAI-generated systems work therefore needs stricter discipline, not less discipline.\n\n\n\n\n\n\nWarningBad failure mode\n\n\n\nThe dangerous workflow is: ask AI for an idea, accept a plausible implementation, run a narrow benchmark, then write a confident story around the result.\nThat is not research. That is benchmark-shaped fiction."
+  },
+  {
+    "objectID": "posts/adrs-systems-research-talk/index.html#the-evaluator-becomes-the-research-instrument",
+    "href": "posts/adrs-systems-research-talk/index.html#the-evaluator-becomes-the-research-instrument",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "The evaluator becomes the research instrument",
+    "text": "The evaluator becomes the research instrument\nA useful AI-driven systems workflow should treat the evaluator as a first-class artifact.\nThe evaluator should define:\n\nthe workload distribution;\nthe correctness oracle;\nthe baseline policy;\nthe measurement protocol;\nthe allowed search space;\nthe hardware and software environment;\nthe stopping rule for failed ideas;\nthe evidence threshold for claiming a result.\n\nThis changes the role of the researcher. The researcher does not merely ask for answers. The researcher designs the cage in which answers are allowed to compete.\nA weak evaluator rewards clever stories. A strong evaluator rewards mechanisms that survive contact with reality."
+  },
+  {
+    "objectID": "posts/adrs-systems-research-talk/index.html#what-adrs-style-research-is-trying-to-do",
+    "href": "posts/adrs-systems-research-talk/index.html#what-adrs-style-research-is-trying-to-do",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "What ADRS-style research is trying to do",
+    "text": "What ADRS-style research is trying to do\nAn AI-driven research system should not be a chatbot that occasionally writes code. It should be a loop.\nproblem definition\n      ↓\nhypothesis generation\n      ↓\nimplementation attempt\n      ↓\ncorrectness gate\n      ↓\nbenchmark gate\n      ↓\nprofiling / diagnosis\n      ↓\nrevision or rejection\n      ↓\nresearch claim\nThe key is that every transition must be constrained. The model can propose. The system must verify. The researcher must decide.\nFor systems research, the loop must be grounded in real artifacts: code, traces, counters, benchmark logs, plots, and reproducible commands. Otherwise, the system is only producing text about research rather than research itself."
+  },
+  {
+    "objectID": "posts/adrs-systems-research-talk/index.html#what-changes-in-paper-writing",
+    "href": "posts/adrs-systems-research-talk/index.html#what-changes-in-paper-writing",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "What changes in paper writing",
+    "text": "What changes in paper writing\nAI also changes how papers are written, but not in the naive sense that “AI writes the paper.” The more important shift is that AI can compress the iteration loop between result, interpretation, and critique.\nA useful workflow might be:\n\nRun the experiment.\nStore raw logs and metadata.\nGenerate a first interpretation.\nAsk for hostile review.\nCheck every claim against the artifact.\nRewrite only the claims that survive.\n\nThe paper becomes a projection of an evidence graph. Claims should trace back to experiments. Experiments should trace back to commands. Commands should trace back to versioned code and environment metadata.\nIf that chain breaks, the paper is fragile."
+  },
+  {
+    "objectID": "posts/adrs-systems-research-talk/index.html#what-does-not-change",
+    "href": "posts/adrs-systems-research-talk/index.html#what-does-not-change",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "What does not change",
+    "text": "What does not change\nAI does not remove the need for taste.\nIt does not decide whether a problem matters. It does not know whether a baseline is socially accepted by a research community. It does not automatically understand whether a 2× speedup is meaningful, whether a 5% regression is fatal, or whether a negative result is actually the more interesting story.\nThose are research judgments.\nThe systems researcher still needs to understand the machine: the operating system, the compiler, the memory hierarchy, the network, the storage device, the GPU, the scheduler, and the workload. AI can generate a map, but the territory still has cliffs."
+  },
+  {
+    "objectID": "posts/adrs-systems-research-talk/index.html#practical-implications",
+    "href": "posts/adrs-systems-research-talk/index.html#practical-implications",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "Practical implications",
+    "text": "Practical implications\nFor a student or early researcher, the lesson is uncomfortable but useful.\nDo not use AI to avoid hard thinking. Use it to expose more hard thinking than you could have reached alone.\nA good AI-assisted workflow should make you more empirical, not more theatrical. It should produce more failed hypotheses, more ablations, more profiling evidence, and more precise claims. If it only produces smoother prose, it is decoration.\nThe minimum standard should be:\n\nevery major claim has an artifact;\nevery artifact has a command;\nevery command has an environment;\nevery result has a baseline;\nevery baseline has a fairness argument;\nevery surprising result has a profiling explanation or a caveat."
+  },
+  {
+    "objectID": "posts/adrs-systems-research-talk/index.html#a-better-mental-model",
+    "href": "posts/adrs-systems-research-talk/index.html#a-better-mental-model",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "A better mental model",
+    "text": "A better mental model\nThe old model of systems research was often:\nhuman insight → implementation → benchmark → paper\nThe newer model is closer to:\nhuman taste → constrained search → automated trials → evaluator → evidence graph → paper\nThe human does not disappear. The human moves to a more severe position: defining what counts as evidence."
+  },
+  {
+    "objectID": "posts/adrs-systems-research-talk/index.html#closing",
+    "href": "posts/adrs-systems-research-talk/index.html#closing",
+    "title": "Barbarians at the Gate: How AI is Upending Systems Research",
+    "section": "Closing",
+    "text": "Closing\nThe barbarians at the gate are not simply AI agents writing code. The real disruption is that solution generation becomes cheap enough to flood the research process with plausible artifacts.\nWhen that happens, the decisive skill is not producing more plausible artifacts. It is building the discipline to reject most of them.\nSystems research survives this transition by becoming more empirical, more reproducible, and more evaluator-centered. The work does not become easier. The blade just moves closer to the bone."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About\nHan-Yin Chang · NTHU CS · GitHub\nThis blog covers database systems, storage engines, and things I learn along the way.\nBuilt with Quarto."
   }
 ]
