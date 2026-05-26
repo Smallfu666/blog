@@ -254,6 +254,25 @@ footer.footer {
                -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
+/* ── Homepage listing compact ─────────────────────────── */
+.quarto-listing .quarto-post .listing-description {
+  font-size: 0.94rem;
+  line-height: 1.48;
+  color: var(--muted-color);
+  margin-top: 0.5rem;
+}
+
+.quarto-listing .quarto-post .listing-categories {
+  margin-bottom: 0.35rem;
+  padding-bottom: 0;
+}
+
+.quarto-listing .listing-category {
+  font-size: 0.68rem;
+  padding: 0.12rem 0.38rem;
+  line-height: 1.35;
+}
+
 /* ── Selection ─────────────────────────────────────────── */
 ::selection {
   background-color: var(--selection-bg);
