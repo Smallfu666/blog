@@ -1,24 +1,15 @@
 ---
-title: "When AI Writes the Solutions, Who Writes the Questions?"
-description: "A paper-reading note on AI-driven systems research and evaluator design."
+title: "Reading \"Barbarians at the Gate\": AI-Driven Research for Systems"
+description: "A paper-reading note on ADRS, evaluators, and systems research workflow."
 author: "Han-Yin Chang"
 date: "2026-05-26"
-image: "https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig3_adrs.jpg"
-toc: true
-page-layout: article
+image: "images/fig3_adrs.jpg"
 format:
   html:
     toc: true
     toc-location: right
 ---
-
-# When AI Writes the Solutions, Who Writes the Questions?
-
-A long-form reading note on AI-driven systems research, evaluator design, and the changing role of systems researchers.
-
 **Working thesis.** ADRS does not make research automatic. It moves the bottleneck from manually writing every solution to defining the problem, constructing the evaluator, and deciding whether a result contains real insight.
-
-Repository context: [Smallfu666/gpu-byteplane-scan-experiments](https://github.com/Smallfu666/gpu-byteplane-scan-experiments)[5]
 
 ---
 
@@ -49,7 +40,7 @@ The paper decomposes systems research into five stages:
 
 ADRS targets only the middle loop: **solution** and **evaluation**.[1]
 
-![Figure 1. Five stages of systems research. ADRS targets the Solution and Evaluation stages, not the whole research process.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig1_workflow.jpg)
+![Figure 1. Five stages of systems research. ADRS targets the Solution and Evaluation stages, not the whole research process.](images/fig1_workflow.jpg)
 
 This boundary matters. The paper is not claiming that problem selection, benchmark design, interpretation, or paper writing are solved. If anything, those parts become more important because the inner loop becomes cheaper.
 
@@ -68,7 +59,7 @@ This is the first key distinction for the talk. If we misread ADRS as “AI does
 
 The paper motivates ADRS by arguing that algorithm design and evaluation consume a large fraction of systems research time. In its survey, algorithm design and evaluation together account for over 40% of reported research time.[1]
 
-![Figure 2. Average time distribution across the research process.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig2_time.png)
+![Figure 2. Average time distribution across the research process.](images/fig2_time.png)
 
 The exact number should not be overread. The survey is small, and the distribution may vary across subfields. But the direction is plausible: a lot of systems research time is spent trying candidate methods and measuring whether they work.
 
@@ -94,7 +85,7 @@ Figure 3 is the central figure. It shows the architecture of AI-Driven Research 
 - **Storage** records candidates, outputs, logs, scores, and feedback.
 - **Solution Selector** chooses what to keep exploring.
 
-![Figure 3. ADRS architecture. Prompt Generator → Solution Generator → Evaluator → Storage → Solution Selector.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig3_adrs.jpg)
+![Figure 3. ADRS architecture. Prompt Generator → Solution Generator → Evaluator → Storage → Solution Selector.](images/fig3_adrs.jpg)
 
 The most important object in this diagram is not the LLM. It is the evaluator. Without a good evaluator, the loop merely produces fluent-looking artifacts. With a good evaluator, the loop becomes a search process over executable solutions.
 
@@ -116,7 +107,7 @@ This also means that ADRS quality is bounded by evaluator quality. If the evalua
 
 Table 1 reports 11 tasks across systems, databases, networking, and ML systems. It is useful because it shows that the ADRS pattern can be applied in several places. But I would not present it as a clean leaderboard.
 
-![Table 1. Summary of ADRS case studies.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/table1_case_studies.jpg)
+![Table 1. Summary of ADRS case studies.](images/table1_case_studies.jpg)
 
 The safer reading is:
 
@@ -152,7 +143,7 @@ Transaction conflicts create bottlenecks. The goal is to schedule transactions s
 
 In the original setting, the Uniform Progress policy tracks whether the job is ahead or behind schedule. The evolved policy adds state: recent spot availability, stability classification, safety margins, buffer rebuilding, and selective waiting.[1]
 
-![Figure 4. Uniform Progress and evolved adaptive policy.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig4_spot.png)
+![Figure 4. Uniform Progress and evolved adaptive policy.](images/fig4_spot.png)
 
 This is a good example of policy evolution. The result is not just a faster implementation of the same formula. It adds a state machine around spot reliability:
 
@@ -175,7 +166,7 @@ That change is a good example of why ADRS can be useful for policy search. It ca
 
 The generalization figure is useful for discussing overfitting.
 
-![Cost-savings curves under different training set sizes.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/cost_curves.png)
+![Cost-savings curves under different training set sizes.](images/cost_curves.png)
 
 This figure should not be used only as “more training data is better.” It is more interesting as a reminder that the evaluation distribution matters. If the feedback set is narrow, ADRS can learn the benchmark rather than the system.
 
@@ -185,7 +176,7 @@ This figure should not be used only as “more training data is better.” It is
 
 This case is closer to implementation-level systems optimization. The original logic is a greedy placement written with explicit loops. The evolved version discovers a tensorized “snake” pattern.
 
-![Figure 5. MoE expert placement before and after evolution.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig5_moe.png)
+![Figure 5. MoE expert placement before and after evolution.](images/fig5_moe.png)
 
 This is still systems work because algorithm and implementation are entangled. The faster method is faster because it expresses the placement in a hardware/library-friendly form.
 
@@ -214,7 +205,7 @@ Each row may trigger an LLM call, so the system wants adjacent prompts to share 
 - low reordering runtime;
 - no change to table semantics.
 
-![Figure 6. LLM-SQL QuickGreedy baseline and evolved policy.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig6_llmsql.png)
+![Figure 6. LLM-SQL QuickGreedy baseline and evolved policy.](images/fig6_llmsql.png)
 
 The evolved policy reduces repeated counting and recursion while preserving similar prefix hit rate. This is a useful place to ask whether ADRS is discovering a new method or simply optimizing code.
 
@@ -245,7 +236,7 @@ Under those constraints, OpenEvolve rediscovers SMF, and the paper explicitly no
 
 > Given the right evaluator, the loop can recover a known strong policy.
 
-![Figure 7. Online SMF on the left; offline evolved policy on the right.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig7_transaction.jpg)
+![Figure 7. Online SMF on the left; offline evolved policy on the right.](images/fig7_transaction.jpg)
 
 The offline setting is more interesting. Once online constraints are removed, ADRS finds a heavier algorithm:
 
@@ -323,27 +314,15 @@ This is not a weakness of the paper. It is the engineering boundary that makes t
 
 ---
 
-## 12. Connecting this to my own GPU byte-plane research
+## 12. Connecting ADRS to GPU byte-plane scan research
 
-My current workflow is not a fully automated ADRS system, but it has similar ingredients.
+A GPU byte-plane scan research project is not a fully automated ADRS system, but it shares the same structure: define a constrained problem, generate candidate kernels or layouts, and judge them with explicit correctness and performance gates.
 
-I use issues and agents to decompose work. Correctness gates and benchmarks reject bad variants. Profiling results help decide whether an apparent improvement has a real mechanism.
-
-![A practical outer loop: issues encode tasks, constraints, and review gates.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/github_issues.jpg)
-
-Two recent project commits make this concrete.
-
-One commit cleans up the paper-facing figure packet and tightens captions, source snapshots, and claim boundaries for Issue #94.[6] Another commit adds a workshop submission draft that explicitly scopes the paper as a warm, device-resident H200 operator study, with four tested true-quasi-global scientific fields and a narrow k=2 shallow-depth headline.[7]
-
-The right mapping is not:
-
-> let AI decide the research.
-
-The safer mapping is:
+The practical lesson is simple:
 
 > let AI search within a fixed semantic boundary, then force every candidate through explicit gates.
 
-A practical evaluator for GPU byte-plane scan research should have at least five layers:
+A good evaluator for GPU byte-plane scan research should check at least five things:
 
 | Layer | What the gate should check | Why |
 |---|---|---|
@@ -353,7 +332,7 @@ A practical evaluator for GPU byte-plane scan research should have at least five
 | Mechanism | NCU evidence: traffic, stalls, occupancy, eligible warps | Explain why a speedup exists |
 | Claim relevance | Does the result support the paper’s actual thesis? | Prevent meaningless number chasing |
 
-The key sentence for this part:
+The key sentence for this part is:
 
 > Do not ask AI whether the kernel is better.  
 > Build gates that make lying expensive.
@@ -422,6 +401,16 @@ That is the central question I want to leave with:
 ---
 
 
+## Appendix: How this note was prepared
+
+This reading note was originally prepared as material for a paper presentation. I used AI tools to help summarize the paper, compare case studies, and turn scattered questions into a more structured reading outline.
+
+![Figure A1. Example of an AI-assisted research workflow. Issue-style tasks help separate paper-reading notes, follow-up questions, and possible research directions. This screenshot is workflow evidence, not evidence from the paper itself.](images/github_issues.jpg)
+
+The screenshot above is a workflow artifact, not part of the paper’s evidence. It shows how issue-style tasks were used to separate reading notes, follow-up questions, and possible research directions while drafting the note.
+
+Some project links are omitted because the related research repository is still private. The public version may be linked later when the project is ready.
+
 ## References
 
 1. Audrey Cheng et al., [*Barbarians at the Gate: How AI is Upending Systems Research*](https://arxiv.org/abs/2510.06189), 2025.
@@ -431,9 +420,3 @@ That is the central question I want to leave with:
 3. Murat Demirbas, ["Barbarians at the Gate: How AI is Upending Systems Research"](https://muratbuffalo.blogspot.com/2025/10/barbarians-at-gate-how-ai-is-upending.html), 2025.
 
 4. Murat Demirbas, ["Academic chat: On PhD"](https://muratbuffalo.blogspot.com/2025/10/academic-chat-on-phd.html), 2025.
-
-5. Han-Yin Chang / Smallfu666, [gpu-byteplane-scan-experiments](https://github.com/Smallfu666/gpu-byteplane-scan-experiments), GitHub repository.
-
-6. Commit [`fce2739`](https://github.com/Smallfu666/gpu-byteplane-scan-experiments/commit/fce27399a7e5d4143a4188d21f0d245a59792aa9), "docs(paper): clean up figure packet and address review feedback for Issue #94."
-
-7. Commit [`8249e14`](https://github.com/Smallfu666/gpu-byteplane-scan-experiments/commit/8249e141b6d6c0d5945afc1a6da4891040bcf798), "docs(paper): add workshop submission draft for Issue #96."

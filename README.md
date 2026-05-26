@@ -7,7 +7,8 @@ Built with [Quarto](https://quarto.org/), hosted on [GitHub Pages](https://small
 ## Writing a new post
 
 ```bash
-quarto render   # preview locally
+quarto preview   # preview locally
+quarto render    # build site for deployment
 git add -A && git commit -m "..." && git push
 ```
 

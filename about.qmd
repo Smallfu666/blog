@@ -1,9 +1,11 @@
 # About
 
-I am Han-Yin Chang, an M.S. student in Computer Science at National Tsing Hua University.
+I am Han-Yin Chang, an M.S. student in Computer Science at National Tsing Hua University and a research assistant at the National Center for High-performance Computing (NCHC), Biomedical Information and Imaging Department.
 
-My work focuses on GPU systems, database systems, and performance-oriented computing. I am currently exploring precision-aware GPU analytical scans, where queries read only the data precision they need to trade accuracy for throughput.
+My work focuses on GPU systems, database systems, and high-performance computing. I am currently studying precision-aware GPU analytical scans, where queries read only the data precision they need to trade accuracy for throughput.
 
-I care about CUDA kernels, Nsight profiling, memory bandwidth, reproducible benchmarks, and systems research that is backed by real measurements.
+At NCHC, I am also exposed to biomedical AI and HPC applications, which gives me a practical systems setting for thinking about GPU computing, profiling, and scalable workloads.
 
-This blog collects my paper readings, research notes, experiment logs, and engineering writeups.
+This blog is my public research notebook. I write about systems papers, experiment logs, GPU/database research, and engineering lessons learned from building and profiling real code.
+
+GitHub: [Smallfu666](https://github.com/Smallfu666)
