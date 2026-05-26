@@ -1,0 +1,35 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Han-Yin Chang"
+  description: "Database/Storage Systems"
+  favicon: favicon.svg
+  navbar:
+    right:
+      - text: "Home"
+        href: index.qmd
+      - text: "About"
+        href: about.qmd
+      - icon: github
+        href: https://github.com/Smallfu666
+
+  page-footer:
+    center:
+      - text: "© Han-Yin Chang"
+
+format:
+  html:
+    css:
+      - claude.css
+    mainfont: "Source Serif 4, Georgia, Times New Roman, Songti SC, Noto Serif CJK TC, serif"
+    monofont: "Menlo, Monaco, SF Mono, Consolas, monospace"
+    fontsize: 1.0625rem
+    linestretch: 1.66
+    toc: true
+    toc-depth: 3
+    number-sections: false
+    code-copy: true
+    code-overflow: scroll
+    smooth-scroll: true

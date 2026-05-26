@@ -1,0 +1,23 @@
+[
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About\nHan-Yin Chang · NTHU CS · GitHub\nThis blog covers database systems, storage engines, and things I learn along the way.\nBuilt with Quarto."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "When AI Writes the Solutions, Who Writes the Questions?",
+    "section": "",
+    "text": "Mar 22, 2026 · 24 min read\nA position paper on systems education co-authored with 14 GenAI TA systems across three universities.\n\nRead the full article →\n\n\n\nThoughts on database systems, storage engines, and computer science education. Built with Quarto and hosted on GitHub Pages."
+  },
+  {
+    "objectID": "index.html#about-this-blog",
+    "href": "index.html#about-this-blog",
+    "title": "When AI Writes the Solutions, Who Writes the Questions?",
+    "section": "",
+    "text": "Thoughts on database systems, storage engines, and computer science education. Built with Quarto and hosted on GitHub Pages."
+  }
+]

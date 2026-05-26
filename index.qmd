@@ -1,0 +1,16 @@
+# When AI Writes the Solutions, Who Writes the Questions?
+
+**Mar 22, 2026 · 24 min read**  
+
+
+_A position paper on systems education co-authored with 14 GenAI TA systems across three universities._
+
+---
+
+[Read the full article →](./posts/adrs-systems-research-talk/)
+
+---
+
+## About this blog
+
+Thoughts on database systems, storage engines, and computer science education. Built with [Quarto](https://quarto.org/) and hosted on GitHub Pages.
