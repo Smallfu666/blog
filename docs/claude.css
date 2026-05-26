@@ -255,16 +255,27 @@ footer.footer {
 }
 
 /* ── Homepage listing compact ─────────────────────────── */
+.quarto-listing .quarto-post .body {
+  display: flex;
+  flex-direction: column;
+}
+
+.quarto-listing .quarto-post .listing-title {
+  order: 1;
+}
+
 .quarto-listing .quarto-post .listing-description {
+  order: 2;
   font-size: 0.94rem;
   line-height: 1.48;
   color: var(--muted-color);
-  margin-top: 0.5rem;
+  margin-top: 0;
 }
 
 .quarto-listing .quarto-post .listing-categories {
-  margin-bottom: 0.35rem;
-  padding-bottom: 0;
+  order: 3;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .quarto-listing .listing-category {
