@@ -1,13 +1,10 @@
 ---
-title: "Barbarians at the Gate: How AI is Upending Systems Research"
-subtitle: "ADRS Systems Research Talk"
+title: "When AI Writes the Solutions, Who Writes the Questions?"
+subtitle: "A reading guide for Barbarians at the Gate: How AI is Upending Systems Research"
+author: "Han-Yin Chang"
 date: "2026-05-26"
-author: "Smallfu666"
-categories:
-  - ADRS
-  - Systems Research
-  - AI-assisted Research
-description: "A clean Quarto version of a talk note on AI-driven systems research, evaluator design, and the changing role of systems researchers."
+categories: [ADRS, Systems Research, AI-assisted Research]
+description: "A long-form reading guide on AI-driven systems research, evaluator design, and the changing role of systems researchers."
 toc: true
 toc-depth: 2
 page-layout: article
@@ -17,179 +14,431 @@ format:
     smooth-scroll: true
 ---
 
-::: {.hero}
-::: {.eyebrow}
-ADRS SYSTEMS RESEARCH TALK
-:::
+# When AI Writes the Solutions, Who Writes the Questions?
 
-::: {.dek}
-When AI makes candidate solutions cheap, the scarce resource in systems research is no longer merely implementation effort. The scarce resource becomes judgment: choosing the right problem, building the right evaluator, and proving that the observed improvement is real.
-:::
-:::
+A long-form reading guide for *Barbarians at the Gate: How AI is Upending Systems Research*.
 
-## Executive summary
+**Working thesis.** ADRS does not make research automatic. It moves the bottleneck from manually writing every solution to defining the problem, constructing the evaluator, and deciding whether a result contains real insight.
 
-AI is changing systems research because it attacks the part of the workflow that used to consume most of the calendar time: generating plausible implementations, variations, scripts, and experimental scaffolding. That does not make systems research easier. It moves the hard part upstream and downstream.
+Repository context: [Smallfu666/gpu-byteplane-scan-experiments](https://github.com/Smallfu666/gpu-byteplane-scan-experiments)[^repo]
 
-Upstream, the researcher must define a sharper problem. Downstream, the researcher must build a stricter evaluator. If the evaluator is weak, AI will happily produce a beautiful-looking answer that is wrong, irrelevant, or impossible to reproduce.
+---
 
-::: {.callout-note title="Core claim"}
-The future systems researcher is less like a lone craftsperson writing one perfect artifact by hand, and more like an architect of search spaces, constraints, and evaluators.
-:::
+## 1. What the paper is really about
 
-## The old bottleneck: producing one credible solution
+The paper’s scope is narrower than “AI writes a whole systems paper.” It argues that systems research is unusually compatible with AI-driven solution discovery because many systems problems have executable verification: a candidate can be placed in a simulator or real system, run on workloads, and measured against a baseline.[^paper]
 
-Traditional systems research often looked like this:
+This matters because systems research is often artifact-centered. A scheduling policy can be placed in a simulator. A load-balancing heuristic can be tested on traces. A GPU kernel variant can be benchmarked and checked against a correctness oracle. In this sense, systems research is attractive for AI-driven discovery because there is often a verifier.
 
-1. Identify a performance, scalability, reliability, or usability problem.
-2. Design a new mechanism.
-3. Implement the mechanism inside a real or realistic system.
-4. Benchmark it against baselines.
-5. Explain why the result generalizes.
+Marc Brooker makes a similar point from a software-engineering angle: if AI makes solution generation cheap, the hard part shifts toward building reliable verifiers, tests, and evaluation systems.[^brooker]
 
-The expensive part was often step 2 and step 3. Writing kernel code, database operators, schedulers, compilers, runtimes, storage engines, or distributed protocols takes time. The code is brittle. The experimental setup is brittle. The reproduction story is brittle.
+> LLMs generate candidate mutations.  
+> The evaluator performs natural selection.
 
-Because implementation was expensive, researchers tended to explore only a small number of designs. A paper might present one main mechanism, a few ablations, and enough experiments to support the claim. That was already difficult work.
+The strongest reading of the paper is not that AI replaces systems researchers. It is that systems researchers become more responsible for defining the right search space and building evaluators that cannot be easily gamed.
 
-## The new bottleneck: evaluating many plausible solutions
+---
 
-AI changes the cost structure. It can generate candidate designs, implementation sketches, benchmark scripts, plots, summaries, and even reviewer-style critiques. The problem is not that these outputs are always correct. The problem is that they are often plausible enough to consume attention.
+## 2. Research workflow: what ADRS does and does not automate
 
-That creates a different bottleneck:
+The paper decomposes systems research into five stages:
 
-- Can we tell which generated ideas are actually new?
-- Can we distinguish a real systems improvement from measurement noise?
-- Can we detect when a benchmark is unfair?
-- Can we prevent the model from optimizing toward the appearance of evidence rather than evidence itself?
-- Can we turn a vague research direction into a closed-loop experimental process?
+1. Problem formulation
+2. Evaluation framework
+3. Solution
+4. Evaluation
+5. Paper write-up
 
-The answer is not “trust the model.” The answer is to make the evaluator stronger than the generator.
+ADRS targets only the middle loop: **solution** and **evaluation**.[^paper]
 
-## Why systems research is especially exposed
+![Figure 1. Five stages of systems research. ADRS targets the Solution and Evaluation stages, not the whole research process.](images/fig1_workflow.jpg)
 
-Systems research has a strange property: many wrong answers look good until they touch a real workload.
+This boundary matters. The paper is not claiming that problem selection, benchmark design, interpretation, or paper writing are solved. If anything, those parts become more important because the inner loop becomes cheaper.
 
-A proposed optimization may sound correct in prose, compile successfully, and pass a toy test. Then it fails under contention, cache pressure, NUMA effects, scheduler noise, GPU occupancy limits, tail latency, memory fragmentation, or a workload distribution that the author did not test.
+A useful way to present this figure:
 
-This is why systems papers are not judged by elegance alone. They are judged by artifacts, measurements, baselines, ablations, and the credibility of the experimental story.
+> ADRS does not choose the research question.  
+> ADRS does not decide whether the benchmark is meaningful.  
+> ADRS does not know whether the result is worth publishing.  
+> It accelerates the generate–evaluate–revise loop once the problem has already been framed.
 
-AI-generated systems work therefore needs stricter discipline, not less discipline.
+This is the first key distinction for the talk. If we misread ADRS as “AI does research,” we miss the more interesting point: AI can multiply low-level search effort, but the high-level research judgment remains scarce.
 
-::: {.callout-warning title="Bad failure mode"}
-The dangerous workflow is: ask AI for an idea, accept a plausible implementation, run a narrow benchmark, then write a confident story around the result.
+---
 
-That is not research. That is benchmark-shaped fiction.
-:::
+## 3. Why this inner loop is tempting to automate
 
-## The evaluator becomes the research instrument
+The paper motivates ADRS by arguing that algorithm design and evaluation consume a large fraction of systems research time. In its survey, algorithm design and evaluation together account for over 40% of reported research time.[^paper]
 
-A useful AI-driven systems workflow should treat the evaluator as a first-class artifact.
+![Figure 2. Average time distribution across the research process.](images/fig2_time.png)
 
-The evaluator should define:
+The exact number should not be overread. The survey is small, and the distribution may vary across subfields. But the direction is plausible: a lot of systems research time is spent trying candidate methods and measuring whether they work.
 
-- the workload distribution;
-- the correctness oracle;
-- the baseline policy;
-- the measurement protocol;
-- the allowed search space;
-- the hardware and software environment;
-- the stopping rule for failed ideas;
-- the evidence threshold for claiming a result.
+The hidden cost is important. The reported automated loop time does not fully capture human effort in refining prompts, constructing evaluators, debugging the setup, or deciding what the result means. This is where a critical reading should not become marketing.
 
-This changes the role of the researcher. The researcher does not merely ask for answers. The researcher designs the cage in which answers are allowed to compete.
+The paper’s practical value is that it gives us a new way to ask:
 
-A weak evaluator rewards clever stories. A strong evaluator rewards mechanisms that survive contact with reality.
+> If the solution/evaluation loop becomes cheaper, what becomes the real bottleneck?
 
-## What ADRS-style research is trying to do
+My answer for this talk is:
 
-An AI-driven research system should not be a chatbot that occasionally writes code. It should be a loop.
+> problem formulation, evaluator design, benchmark validity, and insight distillation.
 
-```text
-problem definition
-      ↓
-hypothesis generation
-      ↓
-implementation attempt
-      ↓
-correctness gate
-      ↓
-benchmark gate
-      ↓
-profiling / diagnosis
-      ↓
-revision or rejection
-      ↓
-research claim
-```
+---
 
-The key is that every transition must be constrained. The model can propose. The system must verify. The researcher must decide.
+## 4. The ADRS loop
 
-For systems research, the loop must be grounded in real artifacts: code, traces, counters, benchmark logs, plots, and reproducible commands. Otherwise, the system is only producing text about research rather than research itself.
+Figure 3 is the central figure. It shows the architecture of AI-Driven Research for Systems:
 
-## What changes in paper writing
+- **Prompt Generator** packages the problem, constraints, context, and selected previous results.
+- **Solution Generator** uses LLMs to produce candidate solutions, often as code.
+- **Evaluator** runs workloads, checks validity, and produces scores or feedback.
+- **Storage** records candidates, outputs, logs, scores, and feedback.
+- **Solution Selector** chooses what to keep exploring.
 
-AI also changes how papers are written, but not in the naive sense that “AI writes the paper.” The more important shift is that AI can compress the iteration loop between result, interpretation, and critique.
+![Figure 3. ADRS architecture. Prompt Generator → Solution Generator → Evaluator → Storage → Solution Selector.](images/fig3_adrs.jpg)
 
-A useful workflow might be:
+The most important object in this diagram is not the LLM. It is the evaluator. Without a good evaluator, the loop merely produces fluent-looking artifacts. With a good evaluator, the loop becomes a search process over executable solutions.
 
-1. Run the experiment.
-2. Store raw logs and metadata.
-3. Generate a first interpretation.
-4. Ask for hostile review.
-5. Check every claim against the artifact.
-6. Rewrite only the claims that survive.
+The loop should be understood as an evolutionary search process:
 
-The paper becomes a projection of an evidence graph. Claims should trace back to experiments. Experiments should trace back to commands. Commands should trace back to versioned code and environment metadata.
+> The LLM generates mutations.  
+> The evaluator selects survivors.  
+> The selector controls exploration pressure.  
+> The human outer loop decides whether any of this is scientifically meaningful.
 
-If that chain breaks, the paper is fragile.
+This also means that ADRS quality is bounded by evaluator quality. If the evaluator is weak, narrow, or gameable, the model will learn to exploit that weakness.
 
-## What does not change
+> If the evaluator is wrong, the loop does not become slower.  
+> It becomes confidently wrong faster.
 
-AI does not remove the need for taste.
+---
 
-It does not decide whether a problem matters. It does not know whether a baseline is socially accepted by a research community. It does not automatically understand whether a 2× speedup is meaningful, whether a 5% regression is fatal, or whether a negative result is actually the more interesting story.
+## 5. The case studies: useful evidence, not a clean leaderboard
 
-Those are research judgments.
+Table 1 reports 11 tasks across systems, databases, networking, and ML systems. It is useful because it shows that the ADRS pattern can be applied in several places. But I would not present it as a clean leaderboard.
 
-The systems researcher still needs to understand the machine: the operating system, the compiler, the memory hierarchy, the network, the storage device, the GPU, the scheduler, and the workload. AI can generate a map, but the territory still has cliffs.
+![Table 1. Summary of ADRS case studies.](images/table1_case_studies.jpg)
 
-## Practical implications
+The safer reading is:
 
-For a student or early researcher, the lesson is uncomfortable but useful.
+> Closed-loop search can often find useful variants quickly when the evaluator is strong.
 
-Do not use AI to avoid hard thinking. Use it to expose more hard thinking than you could have reached alone.
+The less careful reading would be:
 
-A good AI-assisted workflow should make you more empirical, not more theatrical. It should produce more failed hypotheses, more ablations, more profiling evidence, and more precise claims. If it only produces smoother prose, it is decoration.
+> AI beats SOTA everywhere.
 
-The minimum standard should be:
+That second interpretation is too strong. The paper itself notes that the case studies were run by different students, with different configurations, and without extensive ablations.[^paper]
 
-- every major claim has an artifact;
-- every artifact has a command;
-- every command has an environment;
-- every result has a baseline;
-- every baseline has a fairness argument;
-- every surprising result has a profiling explanation or a caveat.
+Before showing before/after code, each case needs a short problem statement. Otherwise the audience only sees code snippets without knowing what the algorithm is trying to optimize.
 
-## A better mental model
+### Can’t Be Late: deadline scheduling with unreliable cheap spot instances
 
-The old model of systems research was often:
+The system wants to run jobs cheaply using spot instances, but spot instances can disappear. The policy must save cost while still meeting deadlines. The evaluator checks deadline validity and cost savings over traces.
 
-```text
-human insight → implementation → benchmark → paper
-```
+### MoE Expert Placement: balance expert load across GPUs
 
-The newer model is closer to:
+The system must place expert replicas across GPUs so that token load is balanced. The reported improvement comes from replacing Python-loop placement with tensorized zigzag placement.
 
-```text
-human taste → constrained search → automated trials → evaluator → evidence graph → paper
-```
+### LLM-SQL: reorder table rows and fields for KV-cache reuse
 
-The human does not disappear. The human moves to a more severe position: defining what counts as evidence.
+SQL-style analytics invokes LLM inference row by row. Reordering rows and fields can increase shared prompt prefixes, improving prefix cache hit rate. The evolved solution preserves hit rate while reducing reordering runtime.
 
-## Closing
+### Transaction Scheduling: reorder transactions to reduce conflicts
 
-The barbarians at the gate are not simply AI agents writing code. The real disruption is that solution generation becomes cheap enough to flood the research process with plausible artifacts.
+Transaction conflicts create bottlenecks. The goal is to schedule transactions so the makespan is minimized. This case is especially useful because online ADRS only rediscovers SOTA, while offline ADRS explores a new heavier search variant.
 
-When that happens, the decisive skill is not producing more plausible artifacts. It is building the discipline to reject most of them.
+---
 
-Systems research survives this transition by becoming more empirical, more reproducible, and more evaluator-centered. The work does not become easier. The blade just moves closer to the bone.
+## 6. Case: Can’t Be Late
+
+In the original setting, the Uniform Progress policy tracks whether the job is ahead or behind schedule. The evolved policy adds state: recent spot availability, stability classification, safety margins, buffer rebuilding, and selective waiting.[^paper]
+
+![Figure 4. Uniform Progress and evolved adaptive policy.](images/fig4_spot.png)
+
+This is a good example of policy evolution. The result is not just a faster implementation of the same formula. It adds a state machine around spot reliability:
+
+- when spots are unstable, the policy can wait or fall back to on-demand;
+- when spots are stable, it exploits them more aggressively;
+- when deadline slack becomes tight, it rebuilds safety buffer.
+
+The point is not simply that the evolved policy is longer. The point is that it adds a memory of recent environment behavior. Uniform Progress mostly asks:
+
+> Am I ahead or behind schedule?
+
+The evolved policy asks:
+
+> Am I ahead or behind schedule?  
+> Are spot instances recently stable?  
+> How much slack do I have?  
+> Is it worth paying the changeover risk now?
+
+That change is a good example of why ADRS can be useful for policy search. It can discover a richer state machine under a simulator.
+
+The generalization figure is useful for discussing overfitting.
+
+![Cost-savings curves under different training set sizes.](images/cost_curves.png)
+
+This figure should not be used only as “more training data is better.” It is more interesting as a reminder that the evaluation distribution matters. If the feedback set is narrow, ADRS can learn the benchmark rather than the system.
+
+---
+
+## 7. Case: MoE Expert Placement
+
+This case is closer to implementation-level systems optimization. The original logic is a greedy placement written with explicit loops. The evolved version discovers a tensorized “snake” pattern.
+
+![Figure 5. MoE expert placement before and after evolution.](images/fig5_moe.png)
+
+This is still systems work because algorithm and implementation are entangled. The faster method is faster because it expresses the placement in a hardware/library-friendly form.
+
+This case is useful for asking:
+
+> Is ADRS optimizing the method, or optimizing the implementation?
+
+The answer is often both. In systems research, the boundary between algorithm and implementation is not clean. A “better algorithm” that ignores hardware or library structure may be worse than a simpler policy expressed in a vectorized, parallel form.
+
+The lesson:
+
+> ADRS searches the space you expose.  
+> If you expose Python loops, it may find tensorization.  
+> If you expose a scheduling policy, it may find a new heuristic.  
+> If you expose a bad evaluator, it may find a benchmark hack.
+
+---
+
+## 8. Case: LLM-SQL
+
+This case is database-adjacent. The problem is not query optimization in the classical sense; it is layout/reordering for LLM inference over relational data.
+
+Each row may trigger an LLM call, so the system wants adjacent prompts to share more prefix tokens. The objective is a tradeoff:
+
+- high prefix hit rate;
+- low reordering runtime;
+- no change to table semantics.
+
+![Figure 6. LLM-SQL QuickGreedy baseline and evolved policy.](images/fig6_llmsql.png)
+
+The evolved policy reduces repeated counting and recursion while preserving similar prefix hit rate. This is a useful place to ask whether ADRS is discovering a new method or simply optimizing code.
+
+The answer is mixed. It introduces a heuristic for preserving prefix continuity, but much of the gain also comes from removing obvious overhead: caching counts, reducing recursion, and avoiding expensive Pandas-style operations.
+
+That ambiguity is normal in systems work. A systems result often lives exactly at this boundary: part algorithm, part implementation, part workload-specific engineering.
+
+---
+
+## 9. Deep dive: Transaction Scheduling
+
+This is the case I would spend the most time on.
+
+The problem is easy to explain to a database audience:
+
+> transactions conflict on shared data;  
+> a better schedule reduces conflict;  
+> lower conflict reduces makespan.
+
+The online setting is strict:
+
+- the order is fixed once scheduled;
+- committed transactions cannot be rolled back;
+- the algorithm is constrained to linear time;
+- full read/write operations are not known in advance.
+
+Under those constraints, OpenEvolve rediscovers SMF, and the paper explicitly notes possible training contamination.[^paper] That means the honest claim is not “AI independently invented SOTA.” The honest claim is:
+
+> Given the right evaluator, the loop can recover a known strong policy.
+
+![Figure 7. Online SMF on the left; offline evolved policy on the right.](images/fig7_transaction.jpg)
+
+The offline setting is more interesting. Once online constraints are removed, ADRS finds a heavier algorithm:
+
+1. compute simple transaction features, such as write counts;
+2. seed the schedule by writes and transaction length;
+3. try greedy insertion into many positions;
+4. perform pair-swap hill climbing;
+5. use random restarts.
+
+This is no longer just a micro-optimization. It changes the search strategy once the problem constraints change.
+
+> The lesson is not “AI magically beats SOTA.”  
+> The lesson is that ADRS can rapidly explore a changed design space when the evaluator is clear.
+
+This is the case that best supports a critical talk. It shows promise and limitation at the same time:
+
+- **promise:** ADRS can explore useful policy variants;
+- **limitation:** rediscovery of known SOTA may be contamination;
+- **deeper lesson:** problem constraints determine what kind of discovery is possible.
+
+---
+
+## 10. Section 6: early best practices and failure modes
+
+Section 6 is one of the strongest parts of the paper. The authors classify how ADRS fails.
+
+The failures can be grouped into three categories:
+
+1. **Runtime errors**  
+   Generated code does not compile, does not integrate, exceeds time limits, or violates API assumptions.
+
+2. **Search failures**  
+   The loop converges too early, repeats similar ideas, drifts between contradictory edits, or gets stuck in a local optimum.
+
+3. **Algorithm failures**  
+   The program runs, but it overfits, ignores constraints, or exploits the evaluator.
+
+The last category is the most dangerous. A compile error is obvious. Reward hacking is not. A candidate can look successful because the evaluation system is incomplete.
+
+The best-practice section can be summarized as four engineering rules:
+
+- **Prompt Generator:** write a structured problem specification with objective, constraints, APIs, and context.
+- **Solution Generator:** use model ensembles carefully; too many models can cause mutation drift.
+- **Evaluator:** prevent overfitting and reward hacking with diverse workloads and multiple signals.
+- **Solution Selector:** maintain diversity, not just the current highest-scoring candidate.
+
+Brooker emphasizes that overfitting and reward hacking are not new to systems research. Benchmarks have long been overfit; AI simply increases the throughput of this failure mode.[^brooker]
+
+> A bad evaluator does not merely produce noisy results.  
+> It creates a target for the model to exploit.
+
+This is where the paper becomes useful beyond AI hype. It forces us to ask: if a model can generate hundreds of variants, what prevents it from optimizing the wrong thing faster than we can understand?
+
+---
+
+## 11. Section 7: limits, explained through one example
+
+I would avoid presenting Section 7 as a simplistic “good fit / bad fit” table. A better way is to use one contrast.
+
+Suppose the task is to improve a local scheduling policy inside a simulator. The candidate modifies one function. The simulator can run hundreds of traces quickly. Correctness is simple: all jobs must be scheduled, all deadlines must be met, and the cost metric is measurable.
+
+This is a good ADRS target.
+
+Now suppose the task is to redesign a distributed consensus protocol across many interacting modules. The candidate may touch state management, network behavior, failure detection, persistence, and recovery. The verifier is no longer a simple benchmark; semantic equivalence and safety become hard to prove.
+
+This is a poor ADRS target unless the evaluation and formal constraints are much stronger.
+
+The general rule:
+
+> ADRS works best when the search space is local,  
+> the evaluator is reliable,  
+> and the evaluation is cheap enough to repeat.
+
+This is not a weakness of the paper. It is the engineering boundary that makes the method credible.
+
+---
+
+## 12. Connecting this to my own GPU byte-plane research
+
+My current workflow is not a fully automated ADRS system, but it has similar ingredients.
+
+I use issues and agents to decompose work. Correctness gates and benchmarks reject bad variants. Profiling results help decide whether an apparent improvement has a real mechanism.
+
+![A practical outer loop: issues encode tasks, constraints, and review gates.](images/github_issues.jpg)
+
+Two recent project commits make this concrete.
+
+One commit cleans up the paper-facing figure packet and tightens captions, source snapshots, and claim boundaries for Issue #94.[^commit-fig] Another commit adds a workshop submission draft that explicitly scopes the paper as a warm, device-resident H200 operator study, with four tested true-quasi-global scientific fields and a narrow k=2 shallow-depth headline.[^commit-draft]
+
+The right mapping is not:
+
+> let AI decide the research.
+
+The safer mapping is:
+
+> let AI search within a fixed semantic boundary, then force every candidate through explicit gates.
+
+A practical evaluator for GPU byte-plane scan research should have at least five layers:
+
+| Layer | What the gate should check | Why |
+|---|---|---|
+| Correctness | COUNT matches encoded CPU oracle; SUM bounds hold | Prevent fake speedups |
+| Performance | Median throughput across fixed k/selectivity/dataset cases | Prevent cherry-picking |
+| Generalization | Uniform, heavy-tailed, zipfian, and scientific datasets | Prevent benchmark overfitting |
+| Mechanism | NCU evidence: traffic, stalls, occupancy, eligible warps | Explain why a speedup exists |
+| Claim relevance | Does the result support the paper’s actual thesis? | Prevent meaningless number chasing |
+
+The key sentence for this part:
+
+> Do not ask AI whether the kernel is better.  
+> Build gates that make lying expensive.
+
+---
+
+## 13. How should we coexist with AI research agents?
+
+Murat’s critique is useful because it shifts the discussion away from raw benchmark gains. He argues that LLMs provide breadth, but research demands depth. They can produce many variants quickly, but they do not automatically provide taste, clarity, or insight.[^murat-adrs]
+
+He also frames LLMs as potentially useful collaborators rather than autonomous researchers. One short phrase captures the hierarchy:
+
+> Good collaborators > No collaborators > Bad collaborators.[^murat-adrs]
+
+The condition is that the work must be bite-sized, bounded, and judged by a human who still understands the system.
+
+Murat’s separate PhD-process essay is also a useful ending frame. The hidden curriculum of research is not only producing papers. It is developing curiosity/taste, clarity, craft, community, and courage.[^murat-phd]
+
+Those skills become more important when solution generation becomes cheap.
+
+> Use agents to reduce friction.  
+> Do not use them to avoid thinking.
+
+This is the part I want to connect back to my own habits. If AI makes it easy to generate experiments, reports, and implementations, it also becomes easier to avoid the hard question:
+
+> Is this problem worth solving?
+
+---
+
+## 14. Publication pressure: more results, or more insight?
+
+Brooker’s critique gives the sharpest social question. If AI makes optimization cheap, the community could get higher-quality work with less effort, but it could also get more meaningless hill climbing.
+
+His compact warning is:
+
+> 100x more papers and 10x less insight.[^brooker]
+
+This is not only an AI problem. It is a systems-research incentive problem that AI can amplify.
+
+If program committees reward benchmark climbing without mechanism, agents will climb benchmarks. If the community rewards clean problem formulation, credible evaluation, and insight, agents can become useful assistants.
+
+The question is not only technical. It is also cultural:
+
+> What kind of work will the research community reward when solution generation becomes cheap?
+
+---
+
+## 15. Final takeaway
+
+The strongest reading of this paper is not that AI will replace systems researchers. The stronger reading is that the job of the systems researcher becomes more sharply defined.
+
+If solution generation becomes cheap, the scarce skills are:
+
+- problem selection;
+- evaluator construction;
+- benchmark skepticism;
+- mechanism explanation;
+- insight distillation.
+
+AI can climb hills faster. The researcher still has to decide which hill is worth climbing, and whether the altitude meter is real.
+
+That is the central question I want to leave with:
+
+> When AI writes the solutions, who writes the questions?
+
+---
+
+## References
+
+[^paper]: Audrey Cheng et al., [*Barbarians at the Gate: How AI is Upending Systems Research*](https://arxiv.org/abs/2510.06189), 2025.
+
+[^murat-adrs]: Murat Demirbas, [“Barbarians at the Gate: How AI is Upending Systems Research”](https://muratbuffalo.blogspot.com/2025/10/barbarians-at-gate-how-ai-is-upending.html), 2025.
+
+[^murat-phd]: Murat Demirbas, [“Academic chat: On PhD”](https://muratbuffalo.blogspot.com/2025/10/academic-chat-on-phd.html), 2025.
+
+[^brooker]: Marc Brooker, [“Is Systems Research Really Just About Making Numbers Bigger?”](https://brooker.co.za/blog/2025/10/12/barbarians.html), 2025.
+
+[^repo]: Han-Yin Chang / Smallfu666, [gpu-byteplane-scan-experiments](https://github.com/Smallfu666/gpu-byteplane-scan-experiments), GitHub repository.
+
+[^commit-fig]: Commit [`fce2739`](https://github.com/Smallfu666/gpu-byteplane-scan-experiments/commit/fce27399a7e5d4143a4188d21f0d245a59792aa9), “docs(paper): clean up figure packet and address review feedback for Issue #94.”
+
+[^commit-draft]: Commit [`8249e14`](https://github.com/Smallfu666/gpu-byteplane-scan-experiments/commit/8249e141b6d6c0d5945afc1a6da4891040bcf798), “docs(paper): add workshop submission draft for Issue #96.”
+
+---
+
+> **Images:** This article references figures from the original ADRS paper. Place image files in `images/` (see `fig1_workflow.jpg`, `fig2_time.png`, `fig3_adrs.jpg`, etc.) when available.
