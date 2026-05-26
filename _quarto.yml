@@ -6,6 +6,10 @@ website:
   title: "Han-Yin Chang"
   description: "Database/Storage Systems"
   favicon: favicon.svg
+  site-url: "https://smallfu666.github.io/blog"
+  reader-mode: true
+  image: favicon.svg
+  open-graph: true
   navbar:
     right:
       - text: "Home"
@@ -18,6 +22,9 @@ website:
   page-footer:
     center:
       - text: "© Han-Yin Chang"
+
+lang: en
+date-format: "YYYY-MM-DD"
 
 format:
   html:
