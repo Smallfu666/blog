@@ -3,10 +3,6 @@ title: "When AI Writes the Solutions, Who Writes the Questions?"
 description: "A paper-reading note on AI-driven systems research and evaluator design."
 author: "Han-Yin Chang"
 date: "2026-05-26"
-categories:
-  - Paper reading
-  - Systems research
-  - AI-assisted research
 image: "https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig3_adrs.jpg"
 toc: true
 page-layout: article
