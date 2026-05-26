@@ -8,7 +8,7 @@
 
 <meta name="author" content="Han-Yin Chang">
 <meta name="dcterms.date" content="2026-05-26">
-<meta name="description" content="A long-form reading guide on AI-driven systems research, evaluator design, and the changing role of systems researchers.">
+<meta name="description" content="A paper-reading note on AI-driven systems research and evaluator design.">
 
 <title>When AI Writes the Solutions, Who Writes the Questions? – Han-Yin Chang</title>
 <style>
@@ -79,8 +79,8 @@ ul.task-list li input[type="checkbox"] {
 
 <link rel="stylesheet" href="../../claude.css">
 <meta property="og:title" content="When AI Writes the Solutions, Who Writes the Questions? – Han-Yin Chang">
-<meta property="og:description" content="A long-form reading guide on AI-driven systems research, evaluator design, and the changing role of systems researchers.">
-<meta property="og:image" content="https://smallfu666.github.io/blog/posts/adrs-systems-research-talk/favicon.svg">
+<meta property="og:description" content="A paper-reading note on AI-driven systems research and evaluator design.">
+<meta property="og:image" content="https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig3_adrs.jpg">
 <meta property="og:site_name" content="Han-Yin Chang">
 </head>
 
@@ -134,14 +134,20 @@ ul.task-list li input[type="checkbox"] {
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">On this page</h2>
    
-  <ul class="collapse">
+  <ul>
   <li><a href="#when-ai-writes-the-solutions-who-writes-the-questions" id="toc-when-ai-writes-the-solutions-who-writes-the-questions" class="nav-link active" data-scroll-target="#when-ai-writes-the-solutions-who-writes-the-questions">When AI Writes the Solutions, Who Writes the Questions?</a>
   <ul class="collapse">
   <li><a href="#what-the-paper-is-really-about" id="toc-what-the-paper-is-really-about" class="nav-link" data-scroll-target="#what-the-paper-is-really-about">1. What the paper is really about</a></li>
   <li><a href="#research-workflow-what-adrs-does-and-does-not-automate" id="toc-research-workflow-what-adrs-does-and-does-not-automate" class="nav-link" data-scroll-target="#research-workflow-what-adrs-does-and-does-not-automate">2. Research workflow: what ADRS does and does not automate</a></li>
   <li><a href="#why-this-inner-loop-is-tempting-to-automate" id="toc-why-this-inner-loop-is-tempting-to-automate" class="nav-link" data-scroll-target="#why-this-inner-loop-is-tempting-to-automate">3. Why this inner loop is tempting to automate</a></li>
   <li><a href="#the-adrs-loop" id="toc-the-adrs-loop" class="nav-link" data-scroll-target="#the-adrs-loop">4. The ADRS loop</a></li>
-  <li><a href="#the-case-studies-useful-evidence-not-a-clean-leaderboard" id="toc-the-case-studies-useful-evidence-not-a-clean-leaderboard" class="nav-link" data-scroll-target="#the-case-studies-useful-evidence-not-a-clean-leaderboard">5. The case studies: useful evidence, not a clean leaderboard</a></li>
+  <li><a href="#the-case-studies-useful-evidence-not-a-clean-leaderboard" id="toc-the-case-studies-useful-evidence-not-a-clean-leaderboard" class="nav-link" data-scroll-target="#the-case-studies-useful-evidence-not-a-clean-leaderboard">5. The case studies: useful evidence, not a clean leaderboard</a>
+  <ul class="collapse">
+  <li><a href="#cant-be-late-deadline-scheduling-with-unreliable-cheap-spot-instances" id="toc-cant-be-late-deadline-scheduling-with-unreliable-cheap-spot-instances" class="nav-link" data-scroll-target="#cant-be-late-deadline-scheduling-with-unreliable-cheap-spot-instances">Can’t Be Late: deadline scheduling with unreliable cheap spot instances</a></li>
+  <li><a href="#moe-expert-placement-balance-expert-load-across-gpus" id="toc-moe-expert-placement-balance-expert-load-across-gpus" class="nav-link" data-scroll-target="#moe-expert-placement-balance-expert-load-across-gpus">MoE Expert Placement: balance expert load across GPUs</a></li>
+  <li><a href="#llm-sql-reorder-table-rows-and-fields-for-kv-cache-reuse" id="toc-llm-sql-reorder-table-rows-and-fields-for-kv-cache-reuse" class="nav-link" data-scroll-target="#llm-sql-reorder-table-rows-and-fields-for-kv-cache-reuse">LLM-SQL: reorder table rows and fields for KV-cache reuse</a></li>
+  <li><a href="#transaction-scheduling-reorder-transactions-to-reduce-conflicts" id="toc-transaction-scheduling-reorder-transactions-to-reduce-conflicts" class="nav-link" data-scroll-target="#transaction-scheduling-reorder-transactions-to-reduce-conflicts">Transaction Scheduling: reorder transactions to reduce conflicts</a></li>
+  </ul></li>
   <li><a href="#case-cant-be-late" id="toc-case-cant-be-late" class="nav-link" data-scroll-target="#case-cant-be-late">6. Case: Can’t Be Late</a></li>
   <li><a href="#case-moe-expert-placement" id="toc-case-moe-expert-placement" class="nav-link" data-scroll-target="#case-moe-expert-placement">7. Case: MoE Expert Placement</a></li>
   <li><a href="#case-llm-sql" id="toc-case-llm-sql" class="nav-link" data-scroll-target="#case-llm-sql">8. Case: LLM-SQL</a></li>
@@ -163,9 +169,8 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">When AI Writes the Solutions, Who Writes the Questions?</h1>
-<p class="subtitle lead">A reading guide for Barbarians at the Gate: How AI is Upending Systems Research</p>
   <div class="quarto-categories">
-    <div class="quarto-category">ADRS</div>
+    <div class="quarto-category">Paper Reading</div>
     <div class="quarto-category">Systems Research</div>
     <div class="quarto-category">AI-assisted Research</div>
   </div>
@@ -173,7 +178,7 @@ ul.task-list li input[type="checkbox"] {
 
 <div>
   <div class="description">
-    A long-form reading guide on AI-driven systems research, evaluator design, and the changing role of systems researchers.
+    A paper-reading note on AI-driven systems research and evaluator design.
   </div>
 </div>
 
@@ -204,15 +209,15 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="when-ai-writes-the-solutions-who-writes-the-questions" class="level1">
 <h1>When AI Writes the Solutions, Who Writes the Questions?</h1>
-<p>A long-form reading guide for <em>Barbarians at the Gate: How AI is Upending Systems Research</em>.</p>
+<p>A long-form reading note on AI-driven systems research, evaluator design, and the changing role of systems researchers.</p>
 <p><strong>Working thesis.</strong> ADRS does not make research automatic. It moves the bottleneck from manually writing every solution to defining the problem, constructing the evaluator, and deciding whether a result contains real insight.</p>
-<p>Repository context: <a href="https://github.com/Smallfu666/gpu-byteplane-scan-experiments">Smallfu666/gpu-byteplane-scan-experiments</a><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>Repository context: <a href="https://github.com/Smallfu666/gpu-byteplane-scan-experiments">Smallfu666/gpu-byteplane-scan-experiments</a>[5]</p>
 <hr>
 <section id="what-the-paper-is-really-about" class="level2">
 <h2 class="anchored" data-anchor-id="what-the-paper-is-really-about">1. What the paper is really about</h2>
-<p>The paper’s scope is narrower than “AI writes a whole systems paper.” It argues that systems research is unusually compatible with AI-driven solution discovery because many systems problems have executable verification: a candidate can be placed in a simulator or real system, run on workloads, and measured against a baseline.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p>The paper’s scope is narrower than “AI writes a whole systems paper.” It argues that systems research is unusually compatible with AI-driven solution discovery because many systems problems have executable verification: a candidate can be placed in a simulator or real system, run on workloads, and measured against a baseline.[1]</p>
 <p>This matters because systems research is often artifact-centered. A scheduling policy can be placed in a simulator. A load-balancing heuristic can be tested on traces. A GPU kernel variant can be benchmarked and checked against a correctness oracle. In this sense, systems research is attractive for AI-driven discovery because there is often a verifier.</p>
-<p>Marc Brooker makes a similar point from a software-engineering angle: if AI makes solution generation cheap, the hard part shifts toward building reliable verifiers, tests, and evaluation systems.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<p>Marc Brooker makes a similar point from a software-engineering angle: if AI makes solution generation cheap, the hard part shifts toward building reliable verifiers, tests, and evaluation systems.[2]</p>
 <blockquote class="blockquote">
 <p>LLMs generate candidate mutations.<br>
 The evaluator performs natural selection.</p>
@@ -230,7 +235,7 @@ The evaluator performs natural selection.</p>
 <li>Evaluation</li>
 <li>Paper write-up</li>
 </ol>
-<p>ADRS targets only the middle loop: <strong>solution</strong> and <strong>evaluation</strong>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<p>ADRS targets only the middle loop: <strong>solution</strong> and <strong>evaluation</strong>.[1]</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig1_workflow.jpg" class="img-fluid figure-img"></p>
@@ -250,7 +255,7 @@ It accelerates the generate–evaluate–revise loop once the problem has alread
 </section>
 <section id="why-this-inner-loop-is-tempting-to-automate" class="level2">
 <h2 class="anchored" data-anchor-id="why-this-inner-loop-is-tempting-to-automate">3. Why this inner loop is tempting to automate</h2>
-<p>The paper motivates ADRS by arguing that algorithm design and evaluation consume a large fraction of systems research time. In its survey, algorithm design and evaluation together account for over 40% of reported research time.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
+<p>The paper motivates ADRS by arguing that algorithm design and evaluation consume a large fraction of systems research time. In its survey, algorithm design and evaluation together account for over 40% of reported research time.[1]</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig2_time.png" class="img-fluid figure-img"></p>
@@ -317,7 +322,7 @@ It becomes confidently wrong faster.</p>
 <blockquote class="blockquote">
 <p>AI beats SOTA everywhere.</p>
 </blockquote>
-<p>That second interpretation is too strong. The paper itself notes that the case studies were run by different students, with different configurations, and without extensive ablations.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+<p>That second interpretation is too strong. The paper itself notes that the case studies were run by different students, with different configurations, and without extensive ablations.[1]</p>
 <p>Before showing before/after code, each case needs a short problem statement. Otherwise the audience only sees code snippets without knowing what the algorithm is trying to optimize.</p>
 <section id="cant-be-late-deadline-scheduling-with-unreliable-cheap-spot-instances" class="level3">
 <h3 class="anchored" data-anchor-id="cant-be-late-deadline-scheduling-with-unreliable-cheap-spot-instances">Can’t Be Late: deadline scheduling with unreliable cheap spot instances</h3>
@@ -339,7 +344,7 @@ It becomes confidently wrong faster.</p>
 </section>
 <section id="case-cant-be-late" class="level2">
 <h2 class="anchored" data-anchor-id="case-cant-be-late">6. Case: Can’t Be Late</h2>
-<p>In the original setting, the Uniform Progress policy tracks whether the job is ahead or behind schedule. The evolved policy adds state: recent spot availability, stability classification, safety margins, buffer rebuilding, and selective waiting.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
+<p>In the original setting, the Uniform Progress policy tracks whether the job is ahead or behind schedule. The evolved policy adds state: recent spot availability, stability classification, safety margins, buffer rebuilding, and selective waiting.[1]</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig4_spot.png" class="img-fluid figure-img"></p>
@@ -434,7 +439,7 @@ lower conflict reduces makespan.</p>
 <li>the algorithm is constrained to linear time;</li>
 <li>full read/write operations are not known in advance.</li>
 </ul>
-<p>Under those constraints, OpenEvolve rediscovers SMF, and the paper explicitly notes possible training contamination.<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> That means the honest claim is not “AI independently invented SOTA.” The honest claim is:</p>
+<p>Under those constraints, OpenEvolve rediscovers SMF, and the paper explicitly notes possible training contamination.[1] That means the honest claim is not “AI independently invented SOTA.” The honest claim is:</p>
 <blockquote class="blockquote">
 <p>Given the right evaluator, the loop can recover a known strong policy.</p>
 </blockquote>
@@ -485,7 +490,7 @@ The program runs, but it overfits, ignores constraints, or exploits the evaluato
 <li><strong>Evaluator:</strong> prevent overfitting and reward hacking with diverse workloads and multiple signals.</li>
 <li><strong>Solution Selector:</strong> maintain diversity, not just the current highest-scoring candidate.</li>
 </ul>
-<p>Brooker emphasizes that overfitting and reward hacking are not new to systems research. Benchmarks have long been overfit; AI simply increases the throughput of this failure mode.<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a></p>
+<p>Brooker emphasizes that overfitting and reward hacking are not new to systems research. Benchmarks have long been overfit; AI simply increases the throughput of this failure mode.[2]</p>
 <blockquote class="blockquote">
 <p>A bad evaluator does not merely produce noisy results.<br>
 It creates a target for the model to exploit.</p>
@@ -520,7 +525,7 @@ and the evaluation is cheap enough to repeat.</p>
 </figure>
 </div>
 <p>Two recent project commits make this concrete.</p>
-<p>One commit cleans up the paper-facing figure packet and tightens captions, source snapshots, and claim boundaries for Issue #94.<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a> Another commit adds a workshop submission draft that explicitly scopes the paper as a warm, device-resident H200 operator study, with four tested true-quasi-global scientific fields and a narrow k=2 shallow-depth headline.<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a></p>
+<p>One commit cleans up the paper-facing figure packet and tightens captions, source snapshots, and claim boundaries for Issue #94.[6] Another commit adds a workshop submission draft that explicitly scopes the paper as a warm, device-resident H200 operator study, with four tested true-quasi-global scientific fields and a narrow k=2 shallow-depth headline.[7]</p>
 <p>The right mapping is not:</p>
 <blockquote class="blockquote">
 <p>let AI decide the research.</p>
@@ -580,13 +585,13 @@ Build gates that make lying expensive.</p>
 </section>
 <section id="how-should-we-coexist-with-ai-research-agents" class="level2">
 <h2 class="anchored" data-anchor-id="how-should-we-coexist-with-ai-research-agents">13. How should we coexist with AI research agents?</h2>
-<p>Murat’s critique is useful because it shifts the discussion away from raw benchmark gains. He argues that LLMs provide breadth, but research demands depth. They can produce many variants quickly, but they do not automatically provide taste, clarity, or insight.<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a></p>
+<p>Murat’s critique is useful because it shifts the discussion away from raw benchmark gains. He argues that LLMs provide breadth, but research demands depth. They can produce many variants quickly, but they do not automatically provide taste, clarity, or insight.[3]</p>
 <p>He also frames LLMs as potentially useful collaborators rather than autonomous researchers. One short phrase captures the hierarchy:</p>
 <blockquote class="blockquote">
-<p>Good collaborators &gt; No collaborators &gt; Bad collaborators.<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a></p>
+<p>Good collaborators &gt; No collaborators &gt; Bad collaborators.[3]</p>
 </blockquote>
 <p>The condition is that the work must be bite-sized, bounded, and judged by a human who still understands the system.</p>
-<p>Murat’s separate PhD-process essay is also a useful ending frame. The hidden curriculum of research is not only producing papers. It is developing curiosity/taste, clarity, craft, community, and courage.<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a></p>
+<p>Murat’s separate PhD-process essay is also a useful ending frame. The hidden curriculum of research is not only producing papers. It is developing curiosity/taste, clarity, craft, community, and courage.[4]</p>
 <p>Those skills become more important when solution generation becomes cheap.</p>
 <blockquote class="blockquote">
 <p>Use agents to reduce friction.<br>
@@ -603,7 +608,7 @@ Do not use them to avoid thinking.</p>
 <p>Brooker’s critique gives the sharpest social question. If AI makes optimization cheap, the community could get higher-quality work with less effort, but it could also get more meaningless hill climbing.</p>
 <p>His compact warning is:</p>
 <blockquote class="blockquote">
-<p>100x more papers and 10x less insight.<a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a></p>
+<p>100x more papers and 10x less insight.[2]</p>
 </blockquote>
 <p>This is not only an AI problem. It is a systems-research incentive problem that AI can amplify.</p>
 <p>If program committees reward benchmark climbing without mechanism, agents will climb benchmarks. If the community rewards clean problem formulation, credible evaluation, and insight, agents can become useful assistants.</p>
@@ -633,33 +638,21 @@ Do not use them to avoid thinking.</p>
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
-<hr>
-
-
-</section>
-</section>
-
-
-<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
-<ol>
-<li id="fn1"><p>Han-Yin Chang / Smallfu666, <a href="https://github.com/Smallfu666/gpu-byteplane-scan-experiments">gpu-byteplane-scan-experiments</a>, GitHub repository.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Audrey Cheng et al., <a href="https://arxiv.org/abs/2510.06189"><em>Barbarians at the Gate: How AI is Upending Systems Research</em></a>, 2025.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>Marc Brooker, <a href="https://brooker.co.za/blog/2025/10/12/barbarians.html">“Is Systems Research Really Just About Making Numbers Bigger?”</a>, 2025.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>Audrey Cheng et al., <a href="https://arxiv.org/abs/2510.06189"><em>Barbarians at the Gate: How AI is Upending Systems Research</em></a>, 2025.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>Audrey Cheng et al., <a href="https://arxiv.org/abs/2510.06189"><em>Barbarians at the Gate: How AI is Upending Systems Research</em></a>, 2025.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn6"><p>Audrey Cheng et al., <a href="https://arxiv.org/abs/2510.06189"><em>Barbarians at the Gate: How AI is Upending Systems Research</em></a>, 2025.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn7"><p>Audrey Cheng et al., <a href="https://arxiv.org/abs/2510.06189"><em>Barbarians at the Gate: How AI is Upending Systems Research</em></a>, 2025.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn8"><p>Audrey Cheng et al., <a href="https://arxiv.org/abs/2510.06189"><em>Barbarians at the Gate: How AI is Upending Systems Research</em></a>, 2025.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn9"><p>Marc Brooker, <a href="https://brooker.co.za/blog/2025/10/12/barbarians.html">“Is Systems Research Really Just About Making Numbers Bigger?”</a>, 2025.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn10"><p>Commit <a href="https://github.com/Smallfu666/gpu-byteplane-scan-experiments/commit/fce27399a7e5d4143a4188d21f0d245a59792aa9"><code>fce2739</code></a>, “docs(paper): clean up figure packet and address review feedback for Issue #94.”<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn11"><p>Commit <a href="https://github.com/Smallfu666/gpu-byteplane-scan-experiments/commit/8249e141b6d6c0d5945afc1a6da4891040bcf798"><code>8249e14</code></a>, “docs(paper): add workshop submission draft for Issue #96.”<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn12"><p>Murat Demirbas, <a href="https://muratbuffalo.blogspot.com/2025/10/barbarians-at-gate-how-ai-is-upending.html">“Barbarians at the Gate: How AI is Upending Systems Research”</a>, 2025.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn13"><p>Murat Demirbas, <a href="https://muratbuffalo.blogspot.com/2025/10/barbarians-at-gate-how-ai-is-upending.html">“Barbarians at the Gate: How AI is Upending Systems Research”</a>, 2025.<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn14"><p>Murat Demirbas, <a href="https://muratbuffalo.blogspot.com/2025/10/academic-chat-on-phd.html">“Academic chat: On PhD”</a>, 2025.<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn15"><p>Marc Brooker, <a href="https://brooker.co.za/blog/2025/10/12/barbarians.html">“Is Systems Research Really Just About Making Numbers Bigger?”</a>, 2025.<a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<ol type="1">
+<li><p>Audrey Cheng et al., <a href="https://arxiv.org/abs/2510.06189"><em>Barbarians at the Gate: How AI is Upending Systems Research</em></a>, 2025.</p></li>
+<li><p>Marc Brooker, <a href="https://brooker.co.za/blog/2025/10/12/barbarians.html">“Is Systems Research Really Just About Making Numbers Bigger?”</a>, 2025.</p></li>
+<li><p>Murat Demirbas, <a href="https://muratbuffalo.blogspot.com/2025/10/barbarians-at-gate-how-ai-is-upending.html">“Barbarians at the Gate: How AI is Upending Systems Research”</a>, 2025.</p></li>
+<li><p>Murat Demirbas, <a href="https://muratbuffalo.blogspot.com/2025/10/academic-chat-on-phd.html">“Academic chat: On PhD”</a>, 2025.</p></li>
+<li><p>Han-Yin Chang / Smallfu666, <a href="https://github.com/Smallfu666/gpu-byteplane-scan-experiments">gpu-byteplane-scan-experiments</a>, GitHub repository.</p></li>
+<li><p>Commit <a href="https://github.com/Smallfu666/gpu-byteplane-scan-experiments/commit/fce27399a7e5d4143a4188d21f0d245a59792aa9"><code>fce2739</code></a>, “docs(paper): clean up figure packet and address review feedback for Issue #94.”</p></li>
+<li><p>Commit <a href="https://github.com/Smallfu666/gpu-byteplane-scan-experiments/commit/8249e141b6d6c0d5945afc1a6da4891040bcf798"><code>8249e14</code></a>, “docs(paper): add workshop submission draft for Issue #96.”</p></li>
 </ol>
-</section></div></main> <!-- /main -->
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

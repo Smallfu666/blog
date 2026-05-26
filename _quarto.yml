@@ -11,6 +11,7 @@ website:
   image: favicon.svg
   open-graph: true
   navbar:
+    pinned: false
     right:
       - text: "Home"
         href: index.qmd
