@@ -4,7 +4,7 @@
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About\nHan-Yin Chang · NTHU CS · GitHub\nThis blog covers database systems, storage engines, and things I learn along the way.\nBuilt with Quarto."
+    "text": "About\nI am Han-Yin Chang, an M.S. student in Computer Science at National Tsing Hua University.\nMy work focuses on GPU systems, database systems, and performance-oriented computing. I am currently exploring precision-aware GPU analytical scans, where queries read only the data precision they need to trade accuracy for throughput.\nI care about CUDA kernels, Nsight profiling, memory bandwidth, reproducible benchmarks, and systems research that is backed by real measurements.\nThis blog collects my paper readings, research notes, experiment logs, and engineering writeups."
   },
   {
     "objectID": "posts/adrs-systems-research-talk/index.html",

@@ -1,7 +1,9 @@
 # About
 
-**Han-Yin Chang** · NTHU CS · [GitHub](https://github.com/Smallfu666)
+I am Han-Yin Chang, an M.S. student in Computer Science at National Tsing Hua University.
 
-This blog covers database systems, storage engines, and things I learn along the way.
+My work focuses on GPU systems, database systems, and performance-oriented computing. I am currently exploring precision-aware GPU analytical scans, where queries read only the data precision they need to trade accuracy for throughput.
 
-Built with [Quarto](https://quarto.org/).
+I care about CUDA kernels, Nsight profiling, memory bandwidth, reproducible benchmarks, and systems research that is backed by real measurements.
+
+This blog collects my paper readings, research notes, experiment logs, and engineering writeups.
