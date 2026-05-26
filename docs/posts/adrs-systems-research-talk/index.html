@@ -80,7 +80,7 @@ ul.task-list li input[type="checkbox"] {
 <link rel="stylesheet" href="../../claude.css">
 <meta property="og:title" content="When AI Writes the Solutions, Who Writes the Questions? – Han-Yin Chang">
 <meta property="og:description" content="A long-form reading guide on AI-driven systems research, evaluator design, and the changing role of systems researchers.">
-<meta property="og:image" content="https://smallfu666.github.io/blog/posts/adrs-systems-research-talk/images/fig1_workflow.jpg">
+<meta property="og:image" content="https://smallfu666.github.io/blog/posts/adrs-systems-research-talk/favicon.svg">
 <meta property="og:site_name" content="Han-Yin Chang">
 </head>
 
@@ -233,7 +233,7 @@ The evaluator performs natural selection.</p>
 <p>ADRS targets only the middle loop: <strong>solution</strong> and <strong>evaluation</strong>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/fig1_workflow.jpg" class="img-fluid figure-img"></p>
+<p><img src="https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig1_workflow.jpg" class="img-fluid figure-img"></p>
 <figcaption>Figure 1. Five stages of systems research. ADRS targets the Solution and Evaluation stages, not the whole research process.</figcaption>
 </figure>
 </div>
@@ -253,7 +253,7 @@ It accelerates the generate–evaluate–revise loop once the problem has alread
 <p>The paper motivates ADRS by arguing that algorithm design and evaluation consume a large fraction of systems research time. In its survey, algorithm design and evaluation together account for over 40% of reported research time.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/fig2_time.png" class="img-fluid figure-img"></p>
+<p><img src="https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig2_time.png" class="img-fluid figure-img"></p>
 <figcaption>Figure 2. Average time distribution across the research process.</figcaption>
 </figure>
 </div>
@@ -281,7 +281,7 @@ It accelerates the generate–evaluate–revise loop once the problem has alread
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/fig3_adrs.jpg" class="img-fluid figure-img"></p>
+<p><img src="https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig3_adrs.jpg" class="img-fluid figure-img"></p>
 <figcaption>Figure 3. ADRS architecture. Prompt Generator → Solution Generator → Evaluator → Storage → Solution Selector.</figcaption>
 </figure>
 </div>
@@ -305,7 +305,7 @@ It becomes confidently wrong faster.</p>
 <p>Table 1 reports 11 tasks across systems, databases, networking, and ML systems. It is useful because it shows that the ADRS pattern can be applied in several places. But I would not present it as a clean leaderboard.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/table1_case_studies.jpg" class="img-fluid figure-img"></p>
+<p><img src="https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/table1_case_studies.jpg" class="img-fluid figure-img"></p>
 <figcaption>Table 1. Summary of ADRS case studies.</figcaption>
 </figure>
 </div>
@@ -342,7 +342,7 @@ It becomes confidently wrong faster.</p>
 <p>In the original setting, the Uniform Progress policy tracks whether the job is ahead or behind schedule. The evolved policy adds state: recent spot availability, stability classification, safety margins, buffer rebuilding, and selective waiting.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/fig4_spot.png" class="img-fluid figure-img"></p>
+<p><img src="https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig4_spot.png" class="img-fluid figure-img"></p>
 <figcaption>Figure 4. Uniform Progress and evolved adaptive policy.</figcaption>
 </figure>
 </div>
@@ -367,7 +367,7 @@ Is it worth paying the changeover risk now?</p>
 <p>The generalization figure is useful for discussing overfitting.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/cost_curves.png" class="img-fluid figure-img"></p>
+<p><img src="https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/cost_curves.png" class="img-fluid figure-img"></p>
 <figcaption>Cost-savings curves under different training set sizes.</figcaption>
 </figure>
 </div>
@@ -379,7 +379,7 @@ Is it worth paying the changeover risk now?</p>
 <p>This case is closer to implementation-level systems optimization. The original logic is a greedy placement written with explicit loops. The evolved version discovers a tensorized “snake” pattern.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/fig5_moe.png" class="img-fluid figure-img"></p>
+<p><img src="https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig5_moe.png" class="img-fluid figure-img"></p>
 <figcaption>Figure 5. MoE expert placement before and after evolution.</figcaption>
 </figure>
 </div>
@@ -409,7 +409,7 @@ If you expose a bad evaluator, it may find a benchmark hack.</p>
 </ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/fig6_llmsql.png" class="img-fluid figure-img"></p>
+<p><img src="https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig6_llmsql.png" class="img-fluid figure-img"></p>
 <figcaption>Figure 6. LLM-SQL QuickGreedy baseline and evolved policy.</figcaption>
 </figure>
 </div>
@@ -440,7 +440,7 @@ lower conflict reduces makespan.</p>
 </blockquote>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/fig7_transaction.jpg" class="img-fluid figure-img"></p>
+<p><img src="https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig7_transaction.jpg" class="img-fluid figure-img"></p>
 <figcaption>Figure 7. Online SMF on the left; offline evolved policy on the right.</figcaption>
 </figure>
 </div>
@@ -515,7 +515,7 @@ and the evaluation is cheap enough to repeat.</p>
 <p>I use issues and agents to decompose work. Correctness gates and benchmarks reject bad variants. Profiling results help decide whether an apparent improvement has a real mechanism.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/github_issues.jpg" class="img-fluid figure-img"></p>
+<p><img src="https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/github_issues.jpg" class="img-fluid figure-img"></p>
 <figcaption>A practical outer loop: issues encode tasks, constraints, and review gates.</figcaption>
 </figure>
 </div>
@@ -634,9 +634,6 @@ Do not use them to avoid thinking.</p>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
 <hr>
-<blockquote class="blockquote">
-<p><strong>Images:</strong> This article references figures from the original ADRS paper. Place image files in <code>images/</code> (see <code>fig1_workflow.jpg</code>, <code>fig2_time.png</code>, <code>fig3_adrs.jpg</code>, etc.) when available.</p>
-</blockquote>
 
 
 </section>

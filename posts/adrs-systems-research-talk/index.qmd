@@ -51,7 +51,7 @@ The paper decomposes systems research into five stages:
 
 ADRS targets only the middle loop: **solution** and **evaluation**.[^paper]
 
-![Figure 1. Five stages of systems research. ADRS targets the Solution and Evaluation stages, not the whole research process.](images/fig1_workflow.jpg)
+![Figure 1. Five stages of systems research. ADRS targets the Solution and Evaluation stages, not the whole research process.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig1_workflow.jpg)
 
 This boundary matters. The paper is not claiming that problem selection, benchmark design, interpretation, or paper writing are solved. If anything, those parts become more important because the inner loop becomes cheaper.
 
@@ -70,7 +70,7 @@ This is the first key distinction for the talk. If we misread ADRS as “AI does
 
 The paper motivates ADRS by arguing that algorithm design and evaluation consume a large fraction of systems research time. In its survey, algorithm design and evaluation together account for over 40% of reported research time.[^paper]
 
-![Figure 2. Average time distribution across the research process.](images/fig2_time.png)
+![Figure 2. Average time distribution across the research process.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig2_time.png)
 
 The exact number should not be overread. The survey is small, and the distribution may vary across subfields. But the direction is plausible: a lot of systems research time is spent trying candidate methods and measuring whether they work.
 
@@ -96,7 +96,7 @@ Figure 3 is the central figure. It shows the architecture of AI-Driven Research 
 - **Storage** records candidates, outputs, logs, scores, and feedback.
 - **Solution Selector** chooses what to keep exploring.
 
-![Figure 3. ADRS architecture. Prompt Generator → Solution Generator → Evaluator → Storage → Solution Selector.](images/fig3_adrs.jpg)
+![Figure 3. ADRS architecture. Prompt Generator → Solution Generator → Evaluator → Storage → Solution Selector.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig3_adrs.jpg)
 
 The most important object in this diagram is not the LLM. It is the evaluator. Without a good evaluator, the loop merely produces fluent-looking artifacts. With a good evaluator, the loop becomes a search process over executable solutions.
 
@@ -118,7 +118,7 @@ This also means that ADRS quality is bounded by evaluator quality. If the evalua
 
 Table 1 reports 11 tasks across systems, databases, networking, and ML systems. It is useful because it shows that the ADRS pattern can be applied in several places. But I would not present it as a clean leaderboard.
 
-![Table 1. Summary of ADRS case studies.](images/table1_case_studies.jpg)
+![Table 1. Summary of ADRS case studies.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/table1_case_studies.jpg)
 
 The safer reading is:
 
@@ -154,7 +154,7 @@ Transaction conflicts create bottlenecks. The goal is to schedule transactions s
 
 In the original setting, the Uniform Progress policy tracks whether the job is ahead or behind schedule. The evolved policy adds state: recent spot availability, stability classification, safety margins, buffer rebuilding, and selective waiting.[^paper]
 
-![Figure 4. Uniform Progress and evolved adaptive policy.](images/fig4_spot.png)
+![Figure 4. Uniform Progress and evolved adaptive policy.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig4_spot.png)
 
 This is a good example of policy evolution. The result is not just a faster implementation of the same formula. It adds a state machine around spot reliability:
 
@@ -177,7 +177,7 @@ That change is a good example of why ADRS can be useful for policy search. It ca
 
 The generalization figure is useful for discussing overfitting.
 
-![Cost-savings curves under different training set sizes.](images/cost_curves.png)
+![Cost-savings curves under different training set sizes.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/cost_curves.png)
 
 This figure should not be used only as “more training data is better.” It is more interesting as a reminder that the evaluation distribution matters. If the feedback set is narrow, ADRS can learn the benchmark rather than the system.
 
@@ -187,7 +187,7 @@ This figure should not be used only as “more training data is better.” It is
 
 This case is closer to implementation-level systems optimization. The original logic is a greedy placement written with explicit loops. The evolved version discovers a tensorized “snake” pattern.
 
-![Figure 5. MoE expert placement before and after evolution.](images/fig5_moe.png)
+![Figure 5. MoE expert placement before and after evolution.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig5_moe.png)
 
 This is still systems work because algorithm and implementation are entangled. The faster method is faster because it expresses the placement in a hardware/library-friendly form.
 
@@ -216,7 +216,7 @@ Each row may trigger an LLM call, so the system wants adjacent prompts to share 
 - low reordering runtime;
 - no change to table semantics.
 
-![Figure 6. LLM-SQL QuickGreedy baseline and evolved policy.](images/fig6_llmsql.png)
+![Figure 6. LLM-SQL QuickGreedy baseline and evolved policy.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig6_llmsql.png)
 
 The evolved policy reduces repeated counting and recursion while preserving similar prefix hit rate. This is a useful place to ask whether ADRS is discovering a new method or simply optimizing code.
 
@@ -247,7 +247,7 @@ Under those constraints, OpenEvolve rediscovers SMF, and the paper explicitly no
 
 > Given the right evaluator, the loop can recover a known strong policy.
 
-![Figure 7. Online SMF on the left; offline evolved policy on the right.](images/fig7_transaction.jpg)
+![Figure 7. Online SMF on the left; offline evolved policy on the right.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/fig7_transaction.jpg)
 
 The offline setting is more interesting. Once online constraints are removed, ADRS finds a heavier algorithm:
 
@@ -331,7 +331,7 @@ My current workflow is not a fully automated ADRS system, but it has similar ing
 
 I use issues and agents to decompose work. Correctness gates and benchmarks reject bad variants. Profiling results help decide whether an apparent improvement has a real mechanism.
 
-![A practical outer loop: issues encode tasks, constraints, and review gates.](images/github_issues.jpg)
+![A practical outer loop: issues encode tasks, constraints, and review gates.](https://raw.githubusercontent.com/Smallfu666/obsidian-image-store/main/img/github_issues.jpg)
 
 Two recent project commits make this concrete.
 
@@ -441,4 +441,3 @@ That is the central question I want to leave with:
 
 ---
 
-> **Images:** This article references figures from the original ADRS paper. Place image files in `images/` (see `fig1_workflow.jpg`, `fig2_time.png`, `fig3_adrs.jpg`, etc.) when available.
