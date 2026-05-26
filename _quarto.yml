@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "Han-Yin Chang"
+  title: "Han-Yin's blog"
   description: "Database/Storage Systems"
   favicon: favicon.svg
   site-url: "https://smallfu666.github.io/blog"
