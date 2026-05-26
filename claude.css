@@ -262,6 +262,10 @@ footer.footer {
   margin-top: 0;
 }
 
+.quarto-listing .quarto-post .listing-author {
+  display: none;
+}
+
 /* ── Selection ─────────────────────────────────────────── */
 ::selection {
   background-color: var(--selection-bg);
