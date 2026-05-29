@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Han-Yin Chang">
-<meta name="dcterms.date" content="2026-05-26">
-<meta name="description" content="A personal paper note on ADRS, evaluators, and systems research workflow.">
+<meta name="dcterms.date" content="2026-05-28">
+<meta name="description" content="從 hyperscaler 的六年折舊到 CoreWeave 的價值 Cascade，AI 基礎設施的財務規劃正在重塑。">
 
-<title>Reading “Barbarians at the Gate”: AI-Driven Research for Systems – Han-Yin's blog</title>
+<title>GPU 折舊策略：資產生命週期優化指南 – Han-Yin’s blog</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -80,9 +80,9 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<meta property="og:title" content="Reading “Barbarians at the Gate”: AI-Driven Research for Systems – Han-Yin’s blog">
-<meta property="og:description" content="A personal paper note on ADRS, evaluators, and systems research workflow.">
-<meta property="og:image" content="https://smallfu666.github.io/blog/posts/adrs-systems-research-talk/images/fig3_adrs.jpg">
+<meta property="og:title" content="GPU 折舊策略：資產生命週期優化指南 – Han-Yin’s blog">
+<meta property="og:description" content="從 hyperscaler 的六年折舊到 CoreWeave 的價值 Cascade，AI 基礎設施的財務規劃正在重塑。">
+<meta property="og:image" content="https://smallfu666.github.io/blog/posts/gpu-depreciation-strategies-cn/favicon.svg">
 <meta property="og:site_name" content="Han-Yin’s blog">
 </head>
 
@@ -300,21 +300,14 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#why-i-cared-about-this-paper" id="toc-why-i-cared-about-this-paper" class="nav-link active" data-scroll-target="#why-i-cared-about-this-paper">1. Why I cared about this paper</a></li>
-  <li><a href="#what-the-paper-is-really-claiming" id="toc-what-the-paper-is-really-claiming" class="nav-link" data-scroll-target="#what-the-paper-is-really-claiming">2. What the paper is really claiming</a></li>
-  <li><a href="#the-adrs-loop" id="toc-the-adrs-loop" class="nav-link" data-scroll-target="#the-adrs-loop">3. The ADRS loop</a></li>
-  <li><a href="#case-studies" id="toc-case-studies" class="nav-link" data-scroll-target="#case-studies">4. Case studies</a>
-  <ul class="collapse">
-  <li><a href="#cant-be-late-deadline-scheduling-with-unreliable-cheap-spot-instances" id="toc-cant-be-late-deadline-scheduling-with-unreliable-cheap-spot-instances" class="nav-link" data-scroll-target="#cant-be-late-deadline-scheduling-with-unreliable-cheap-spot-instances">Can’t Be Late: deadline scheduling with unreliable cheap spot instances</a></li>
-  <li><a href="#moe-expert-placement-balance-expert-load-across-gpus" id="toc-moe-expert-placement-balance-expert-load-across-gpus" class="nav-link" data-scroll-target="#moe-expert-placement-balance-expert-load-across-gpus">MoE Expert Placement: balance expert load across GPUs</a></li>
-  <li><a href="#llm-sql-reorder-table-rows-and-fields-for-kv-cache-reuse" id="toc-llm-sql-reorder-table-rows-and-fields-for-kv-cache-reuse" class="nav-link" data-scroll-target="#llm-sql-reorder-table-rows-and-fields-for-kv-cache-reuse">LLM-SQL: reorder table rows and fields for KV-cache reuse</a></li>
-  <li><a href="#transaction-scheduling-reorder-transactions-to-reduce-conflicts" id="toc-transaction-scheduling-reorder-transactions-to-reduce-conflicts" class="nav-link" data-scroll-target="#transaction-scheduling-reorder-transactions-to-reduce-conflicts">Transaction Scheduling: reorder transactions to reduce conflicts</a></li>
-  </ul></li>
-  <li><a href="#failure-modes" id="toc-failure-modes" class="nav-link" data-scroll-target="#failure-modes">5. Failure modes</a></li>
-  <li><a href="#connection-to-gpu-byte-plane-scan-research" id="toc-connection-to-gpu-byte-plane-scan-research" class="nav-link" data-scroll-target="#connection-to-gpu-byte-plane-scan-research">6. Connection to GPU byte-plane scan research</a></li>
-  <li><a href="#short-ending" id="toc-short-ending" class="nav-link" data-scroll-target="#short-ending">7. Short ending</a></li>
-  <li><a href="#workflow-note-ai-assisted-paper-reading" id="toc-workflow-note-ai-assisted-paper-reading" class="nav-link" data-scroll-target="#workflow-note-ai-assisted-paper-reading">Workflow note: AI-assisted paper reading</a></li>
-  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  <li><a href="#為什麼-gpu-折舊是個大問題" id="toc-為什麼-gpu-折舊是個大問題" class="nav-link active" data-scroll-target="#為什麼-gpu-折舊是個大問題">為什麼 GPU 折舊是個大問題</a></li>
+  <li><a href="#hyperscalers-怎麼做" id="toc-hyperscalers-怎麼做" class="nav-link" data-scroll-target="#hyperscalers-怎麼做">Hyperscalers 怎麼做</a></li>
+  <li><a href="#價值-cascade-理論" id="toc-價值-cascade-理論" class="nav-link" data-scroll-target="#價值-cascade-理論">價值 Cascade 理論</a></li>
+  <li><a href="#三種折舊策略" id="toc-三種折舊策略" class="nav-link" data-scroll-target="#三種折舊策略">三種折舊策略</a></li>
+  <li><a href="#更新週期建議" id="toc-更新週期建議" class="nav-link" data-scroll-target="#更新週期建議">更新週期建議</a></li>
+  <li><a href="#稅務優化" id="toc-稅務優化" class="nav-link" data-scroll-target="#稅務優化">稅務優化</a></li>
+  <li><a href="#總結" id="toc-總結" class="nav-link" data-scroll-target="#總結">總結</a></li>
+  <li><a href="#參考資料" id="toc-參考資料" class="nav-link" data-scroll-target="#參考資料">參考資料</a></li>
   </ul>
 </nav>
     </div>
@@ -324,12 +317,12 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Reading “Barbarians at the Gate”: AI-Driven Research for Systems</h1>
+<h1 class="title">GPU 折舊策略：資產生命週期優化指南</h1>
 </div>
 
 <div>
   <div class="description">
-    A personal paper note on ADRS, evaluators, and systems research workflow.
+    從 hyperscaler 的六年折舊到 CoreWeave 的價值 Cascade，AI 基礎設施的財務規劃正在重塑。
   </div>
 </div>
 
@@ -346,7 +339,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2026-05-26</p>
+      <p class="date">2026-05-28</p>
     </div>
   </div>
   
@@ -358,238 +351,79 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="why-i-cared-about-this-paper" class="level2">
-<h2 class="anchored" data-anchor-id="why-i-cared-about-this-paper">1. Why I cared about this paper</h2>
-<p>I read this paper because I keep running into the same tension in my own systems work: an agent can now sketch kernel or scheduler variants faster than I can inspect the first one with confidence. That is useful, but it is also unsettling. If solution search gets cheap, the hard part moves to the front. I need to know what problem matters, what counts as success, and what evidence would convince me that the improvement is real.</p>
-<p>ADRS gave me a clean way to think about that. The paper does not promise to automate systems research end to end. It makes a narrower claim that I find more believable: make solution generation cheaper, and problem framing, evaluator design, benchmark skepticism, and mechanism understanding become more important, not less.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/fig1_workflow.jpg" class="img-fluid figure-img"></p>
-<figcaption>Figure 1. Five stages of systems research. ADRS targets the Solution and Evaluation stages, not the whole research process.</figcaption>
-</figure>
-</div>
-<p>The paper’s time breakdown matters for the same reason. I do not think every project has the same distribution, but the chart explains why the inner loop is so tempting to automate. A lot of systems research time is still spent proposing, testing, and revising candidates.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/fig2_time.png" class="img-fluid figure-img"></p>
-<figcaption>Figure 2. Average time distribution across the research process.</figcaption>
-</figure>
-</div>
-<p>The strongest reading of the paper is not that AI replaces systems researchers. It is that systems researchers become more responsible for defining the right search space and building evaluators that cannot be easily gamed.</p>
-<hr>
+<section id="為什麼-gpu-折舊是個大問題" class="level2">
+<h2 class="anchored" data-anchor-id="為什麼-gpu-折舊是個大問題">為什麼 GPU 折舊是個大問題</h2>
+<p>Microsoft 的 Satya Nadella 一句話點出了關鍵：「我不想被單一世代 GPU 卡住四到五年的折舊。」單顆 GPU 要價五萬美元以上，而 NVIDIA 每 18–24 個月就推出新架構。折舊策略選錯，可能讓整個 AI 基礎設施的財務模型從根本傾斜。</p>
 </section>
-<section id="what-the-paper-is-really-claiming" class="level2">
-<h2 class="anchored" data-anchor-id="what-the-paper-is-really-claiming">2. What the paper is really claiming</h2>
-<p>The paper’s claim is narrower than “AI writes a whole systems paper.” It argues that systems research is unusually compatible with AI-driven solution discovery because many systems problems have executable verification: a candidate can be placed in a simulator or real system, run on workloads, and measured against a baseline.[1]</p>
-<p>This matters because systems work is often artifact-centered. A scheduling policy can be placed in a simulator. A load-balancing heuristic can be tested on traces. A GPU kernel variant can be benchmarked and checked against a correctness oracle. In that sense, systems research is a good fit for AI-driven search because there is often a verifier.</p>
-<p>Marc Brooker makes a similar point from a software-engineering angle: if AI makes solution generation cheap, the hard part shifts toward building reliable verifiers, tests, and evaluation systems.[2]</p>
-<blockquote class="blockquote">
-<p>LLMs generate candidate mutations.<br>
-The evaluator performs natural selection.</p>
-</blockquote>
-<p>The strongest reading of the paper is not that AI replaces systems researchers. It is that systems researchers become more responsible for defining the right search space and building evaluators that cannot be easily gamed.</p>
-<hr>
+<section id="hyperscalers-怎麼做" class="level2">
+<h2 class="anchored" data-anchor-id="hyperscalers-怎麼做">Hyperscalers 怎麼做</h2>
+<p>Amazon、Microsoft、Google 已先後將伺服器折舊年限從 3–4 年延長至 6 年，Meta 則保守地停在 5 年。這波集體延長估計為 hyperscalers 省下每年約 180 億美元的折舊費用——從 390 億降到 210 億，降幅達 46%。</p>
+<p>但這種會計處理到底反映經濟現實，還是只是在做帳？業界仍在激烈辯論。</p>
 </section>
-<section id="the-adrs-loop" class="level2">
-<h2 class="anchored" data-anchor-id="the-adrs-loop">3. The ADRS loop</h2>
-<p>The paper decomposes systems research into five stages:</p>
-<ol type="1">
-<li>Problem formulation</li>
-<li>Evaluation framework</li>
-<li>Solution</li>
-<li>Evaluation</li>
-<li>Paper write-up</li>
-</ol>
-<p>ADRS targets only the middle loop: <strong>solution</strong> and <strong>evaluation</strong>.[1]</p>
-<p>Figure 3 is the architecture I keep coming back to:</p>
+<section id="價值-cascade-理論" class="level2">
+<h2 class="anchored" data-anchor-id="價值-cascade-理論">價值 Cascade 理論</h2>
+<p>GPU 的使用價值隨時間自然流動，形成一個 cascade：</p>
 <ul>
-<li><strong>Prompt Generator</strong> packages the problem, constraints, context, and selected previous results.</li>
-<li><strong>Solution Generator</strong> uses LLMs to produce candidate solutions, often as code.</li>
-<li><strong>Evaluator</strong> runs workloads, checks validity, and produces scores or feedback.</li>
-<li><strong>Storage</strong> records candidates, outputs, logs, scores, and feedback.</li>
-<li><strong>Solution Selector</strong> chooses what to keep exploring.</li>
+<li><strong>第 1–2 年（訓練）</strong>：最新世代 GPU 跑最先進的模型訓練，價值最高。</li>
+<li><strong>第 3–4 年（生產推理）</strong>：新一代接手訓練後，前代 GPU 轉做即時推理，效能仍足夠。</li>
+<li><strong>第 5–6 年（批次處理）</strong>：最後階段支援批次分析、成本敏感的推理工作負載。</li>
 </ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/fig3_adrs.jpg" class="img-fluid figure-img"></p>
-<figcaption>Figure 3. ADRS architecture. Prompt Generator → Solution Generator → Evaluator → Storage → Solution Selector.</figcaption>
-</figure>
-</div>
-<p>The main object here is not the LLM. It is the evaluator. Without a good evaluator, the loop just produces fluent-looking artifacts. With a good evaluator, the loop becomes a search process over executable solutions.</p>
-<blockquote class="blockquote">
-<p>The LLM generates mutations.<br>
-The evaluator selects survivors.<br>
-The selector controls exploration pressure.<br>
-The human outer loop decides whether any of this is scientifically meaningful.</p>
-</blockquote>
-<p>ADRS quality is bounded by evaluator quality. If the evaluator is weak, narrow, or gameable, the model will learn to exploit that weakness.</p>
-<blockquote class="blockquote">
-<p>If the evaluator is wrong, the loop does not become slower.<br>
-It becomes confidently wrong faster.</p>
-</blockquote>
-<hr>
+<p>CoreWeave 的 CEO Michael Intrator 提供了實際證據：A100（2020 年發表）至今推理工作負載仍被訂滿，H100 到期合約重簽價格維持在原價的 95%。</p>
 </section>
-<section id="case-studies" class="level2">
-<h2 class="anchored" data-anchor-id="case-studies">4. Case studies</h2>
-<p>Table 1 reports 11 tasks across systems, databases, networking, and ML systems. I read it as evidence that the ADRS pattern can work in several places, not as a clean leaderboard.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/table1_case_studies.jpg" class="img-fluid figure-img"></p>
-<figcaption>Table 1. Summary of ADRS case studies.</figcaption>
-</figure>
-</div>
-<p>The safer reading is that closed-loop search can often find useful variants quickly when the evaluator is strong. The paper itself is also clear that the case studies were run by different students, with different configurations, and without extensive ablations.[1]</p>
-<p>The most useful way to talk about the cases is not to give all of them the same weight.</p>
-<section id="cant-be-late-deadline-scheduling-with-unreliable-cheap-spot-instances" class="level3">
-<h3 class="anchored" data-anchor-id="cant-be-late-deadline-scheduling-with-unreliable-cheap-spot-instances">Can’t Be Late: deadline scheduling with unreliable cheap spot instances</h3>
-<p>The system wants to run jobs cheaply using spot instances, but spot instances can disappear. The policy must save cost while still meeting deadlines. The interesting part is that the evaluator can directly check deadline validity and cost savings.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/fig4_spot.png" class="img-fluid figure-img"></p>
-<figcaption>Figure 4. Uniform Progress and evolved adaptive policy.</figcaption>
-</figure>
-</div>
-<p>The evolved policy adds state around spot reliability. It waits when spots look unstable and slack is still available, and it becomes more aggressive when the environment looks safe.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/cost_curves.png" class="img-fluid figure-img"></p>
-<figcaption>Cost-savings curves under different training set sizes.</figcaption>
-</figure>
-</div>
-<p>This is the figure I keep in mind when I think about overfitting. If the feedback set is narrow, ADRS can learn the benchmark rather than the system.</p>
-</section>
-<section id="moe-expert-placement-balance-expert-load-across-gpus" class="level3">
-<h3 class="anchored" data-anchor-id="moe-expert-placement-balance-expert-load-across-gpus">MoE Expert Placement: balance expert load across GPUs</h3>
-<p>The system places expert replicas across GPUs so token load is balanced. The paper’s gain here comes from replacing a Python-loop implementation with a tensorized placement pattern. That is still real systems work, but it is also a reminder that ADRS often operates at the boundary between algorithm and implementation.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/fig5_moe.png" class="img-fluid figure-img"></p>
-<figcaption>Figure 5. MoE expert placement before and after evolution.</figcaption>
-</figure>
-</div>
-</section>
-<section id="llm-sql-reorder-table-rows-and-fields-for-kv-cache-reuse" class="level3">
-<h3 class="anchored" data-anchor-id="llm-sql-reorder-table-rows-and-fields-for-kv-cache-reuse">LLM-SQL: reorder table rows and fields for KV-cache reuse</h3>
-<p>This case is database-adjacent rather than classical query optimization. The system runs LLM inference row by row, so if adjacent prompts share prefixes, KV-cache reuse improves. The goal is to reorder rows and fields so prefix hit rate stays high while reordering runtime stays low.</p>
-<p>For example, if two adjacent rows both start with the same instruction and share fields like product category or review template, the LLM may reuse more prefix KV cache. The goal is not to change the query result. The goal is to arrange the table so that the prompts become cheaper to execute.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/fig6_llmsql.png" class="img-fluid figure-img"></p>
-<figcaption>Figure 6. LLM-SQL QuickGreedy baseline and evolved policy.</figcaption>
-</figure>
-</div>
-<p>What I take from this case is that ADRS is not always inventing a new algorithm. Sometimes it is finding a cheaper implementation of a heuristic that already made sense.</p>
-</section>
-<section id="transaction-scheduling-reorder-transactions-to-reduce-conflicts" class="level3">
-<h3 class="anchored" data-anchor-id="transaction-scheduling-reorder-transactions-to-reduce-conflicts">Transaction Scheduling: reorder transactions to reduce conflicts</h3>
-<p>This is the most interesting case to me because it shows both promise and limitation. The online setting rediscovers SMF, and the paper explicitly treats that as likely contamination. The offline setting is more interesting: once the constraints change, the search finds a heavier O(n^2) greedy construction with pair-swap hill climbing and random restarts.</p>
-<p>For a toy workload, imagine three transactions:</p>
-<ul>
-<li><code>T1</code> writes hot key <code>A</code></li>
-<li><code>T2</code> touches only <code>B</code></li>
-<li><code>T3</code> writes hot key <code>A</code></li>
-</ul>
-<p>If the scheduler places <code>T1</code> and <code>T3</code> back-to-back, the hot key is hit twice in a row. A better order inserts <code>T2</code> between them so the conflict pressure is lower.</p>
-<p>SMF is a greedy policy: at each step it samples candidate transactions and appends the one that increases makespan the least.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/fig7_transaction.jpg" class="img-fluid figure-img"></p>
-<figcaption>Figure 7. Online SMF on the left; offline evolved policy on the right.</figcaption>
-</figure>
-</div>
-<p>That is the kind of result I trust most in this paper: not magic, just a changed constraint set and a search loop that can exploit it.</p>
-<hr>
-</section>
-</section>
-<section id="failure-modes" class="level2">
-<h2 class="anchored" data-anchor-id="failure-modes">5. Failure modes</h2>
-<p>Section 6 is one of the strongest parts of the paper because it is honest about how the loop breaks.</p>
-<p>The failures fall into three broad categories:</p>
-<ol type="1">
-<li><strong>Runtime errors</strong></li>
-<li><strong>Search failures</strong></li>
-<li><strong>Algorithm failures</strong></li>
-</ol>
-<p>Runtime errors are the easy part. The code does not compile, does not integrate, times out, or violates assumptions. Search failures are more subtle: the loop gets stuck, repeats itself, or converges too early. Algorithm failures are the ones I care about most, because the program runs and still misses the point.</p>
-<p>This is where overfitting and reward hacking matter.</p>
-<p>Overfitting means the candidate learned the evaluation set, not the system. It performs well on the traces used during the search, but it does not generalize to new workloads. Reward hacking is worse: the candidate exploits a loophole in the evaluator instead of solving the intended task.</p>
-<p>That distinction matters because a bad evaluator is not just noisy. It becomes a target.</p>
-<blockquote class="blockquote">
-<p>A bad evaluator does not merely produce noisy results.<br>
-It creates a target for the model to exploit.</p>
-</blockquote>
-<p>This is why I read evaluator design as the research problem, not as bookkeeping.</p>
-</section>
-<section id="connection-to-gpu-byte-plane-scan-research" class="level2">
-<h2 class="anchored" data-anchor-id="connection-to-gpu-byte-plane-scan-research">6. Connection to GPU byte-plane scan research</h2>
-<p>The way I would connect this paper to my own GPU byte-plane scan work is simple: let the agent search only within a fixed semantic boundary, then force every candidate through explicit gates.</p>
-<p>That means the evaluator has to check more than one thing:</p>
+<section id="三種折舊策略" class="level2">
+<h2 class="anchored" data-anchor-id="三種折舊策略">三種折舊策略</h2>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
 <thead>
 <tr class="header">
-<th>Layer</th>
-<th>What the gate should check</th>
-<th>Why</th>
+<th>策略</th>
+<th>年限</th>
+<th>適合誰</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Correctness</td>
-<td>COUNT matches encoded CPU oracle; SUM bounds hold</td>
-<td>Prevent fake speedups</td>
+<td>保守型</td>
+<td>3 年</td>
+<td>AI 工作負載壽命不明確、風險規避的組織</td>
 </tr>
 <tr class="even">
-<td>Performance</td>
-<td>Median throughput across fixed k/selectivity/dataset cases</td>
-<td>Prevent cherry-picking</td>
+<td>延伸型</td>
+<td>6 年</td>
+<td>工作負載多樣（訓練 + 推理）、有二級市場通道</td>
 </tr>
 <tr class="odd">
-<td>Generalization</td>
-<td>Uniform, heavy-tailed, zipfian, and scientific datasets</td>
-<td>Prevent benchmark overfitting</td>
-</tr>
-<tr class="even">
-<td>Mechanism</td>
-<td>Nsight Compute evidence: traffic, stalls, occupancy, eligible warps</td>
-<td>Explain why a speedup exists</td>
-</tr>
-<tr class="odd">
-<td>Claim relevance</td>
-<td>Does the result support the paper’s actual thesis?</td>
-<td>Prevent meaningless number chasing</td>
+<td>混合前置型</td>
+<td>前 2 年折 50–60%</td>
+<td>想在稅務效率與保守財報之間取得平衡</td>
 </tr>
 </tbody>
 </table>
-<p>For me, this is the practical lesson of ADRS. I do not want an agent to tell me whether a kernel is better. I want gates that make lying expensive.</p>
 </section>
-<section id="short-ending" class="level2">
-<h2 class="anchored" data-anchor-id="short-ending">7. Short ending</h2>
-<p>ADRS does not make systems research automatic. It makes solution generation cheaper.</p>
-<p>The researcher still has to decide which hill matters, and whether the altitude meter is real.</p>
+<section id="更新週期建議" class="level2">
+<h2 class="anchored" data-anchor-id="更新週期建議">更新週期建議</h2>
+<ul>
+<li><strong>訓練叢集</strong>：2–3 年換代，保持競爭力</li>
+<li><strong>生產推理</strong>：4–5 年，或等到效率提升超過換代成本</li>
+<li><strong>開發/測試</strong>：5–6 年以上，接收生產環境淘汰的硬體</li>
+</ul>
 </section>
-<section id="workflow-note-ai-assisted-paper-reading" class="level2">
-<h2 class="anchored" data-anchor-id="workflow-note-ai-assisted-paper-reading">Workflow note: AI-assisted paper reading</h2>
-<p>I used AI tools to help organize this note and turn scattered reading questions into a structured outline. The screenshot below is a workflow artifact, not evidence from the paper itself.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/github_issues.jpg" class="img-fluid figure-img"></p>
-<figcaption>Figure A1. Example of an AI-assisted research workflow. Issue-style tasks help separate paper-reading notes, follow-up questions, and possible research directions.</figcaption>
-</figure>
-</div>
-<p>Some project links are omitted because the related research repository is still private. The public version may be linked later when the project is ready.</p>
+<section id="稅務優化" class="level2">
+<h2 class="anchored" data-anchor-id="稅務優化">稅務優化</h2>
+<ul>
+<li>Section 179（2025 年）：最高可扣抵 122 萬美元</li>
+<li>Bonus depreciation：2025 年為 60%（從 2022 年的 100% 逐步下降）</li>
+</ul>
 </section>
-<section id="references" class="level2">
-<h2 class="anchored" data-anchor-id="references">References</h2>
+<section id="總結" class="level2">
+<h2 class="anchored" data-anchor-id="總結">總結</h2>
+<p>GPU 折舊是 AI 密集組織最重要的財務決策之一。Hyperscalers 用六年折舊賭的是價值 cascade 模型會成立，但一般組織必須根據自己的工作負載組合和二級市場能力來判斷。混合策略通常提供最大的靈活性。核心原則是：用營運數據說話，而不是只靠會計理論。</p>
+</section>
+<section id="參考資料" class="level2">
+<h2 class="anchored" data-anchor-id="參考資料">參考資料</h2>
 <ol type="1">
-<li><p>Audrey Cheng et al., <a href="https://arxiv.org/abs/2510.06189"><em>Barbarians at the Gate: How AI is Upending Systems Research</em></a>, 2025.</p></li>
-<li><p>Marc Brooker, <a href="https://brooker.co.za/blog/2025/10/12/barbarians.html">“Is Systems Research Really Just About Making Numbers Bigger?”</a>, 2025.</p></li>
-<li><p>Murat Demirbas, <a href="https://muratbuffalo.blogspot.com/2025/10/barbarians-at-gate-how-ai-is-upending.html">“Barbarians at the Gate: How AI is Upending Systems Research”</a>, 2025.</p></li>
-<li><p>Murat Demirbas, <a href="https://muratbuffalo.blogspot.com/2025/10/academic-chat-on-phd.html">“Academic chat: On PhD”</a>, 2025.</p></li>
+<li>CNBC. “The question everyone in AI is asking: How long before a GPU depreciates?” November 14, 2025.</li>
+<li>SiliconANGLE. “Resetting GPU depreciation.” November 22, 2025.</li>
+<li>MBI Deep Dives. “Big Tech’s Deteriorating Earnings Quality.” 2025.</li>
 </ol>
 
 

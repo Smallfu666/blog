@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/gpu-depreciation-strategies-cn/index.html",
       "/posts/adrs-systems-research-talk/index.html"
     ]
   }

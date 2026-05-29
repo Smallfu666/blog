@@ -24,20 +24,13 @@ website:
     center:
       - text: "© Han-Yin Chang"
 
-lang: en
-date-format: "YYYY-MM-DD"
-
 format:
   html:
-    css:
-      - claude.css
-    mainfont: "Source Serif 4, Georgia, Times New Roman, Songti SC, Noto Serif CJK TC, serif"
-    monofont: "Menlo, Monaco, SF Mono, Consolas, monospace"
-    fontsize: 1.0625rem
-    linestretch: 1.66
+    theme:
+      light: claude-light.css
+      dark: claude-dark.css
     toc: true
-    toc-depth: 3
-    number-sections: false
-    code-copy: true
-    code-overflow: scroll
-    smooth-scroll: true
+    include-after-body: toc-scrollspy.html
+
+lang: en
+date-format: "YYYY-MM-DD"

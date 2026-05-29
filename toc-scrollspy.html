@@ -1,0 +1,85 @@
+<script>
+function isDarkMode() {
+  var sheets = document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].rel === 'stylesheet') return true;
+  }
+  return false;
+}
+
+function getParam(key) {
+  return (new URLSearchParams(window.location.search)).get(key);
+}
+
+function setParam(key, val) {
+  var url = new URL(window.location);
+  url.searchParams.set(key, val);
+  history.replaceState(null, '', url);
+}
+
+function persistTheme(isDark) {
+  setParam('theme', isDark ? 'dark' : 'light');
+  try { window.localStorage.setItem('quarto-color-scheme', isDark ? 'alternate' : 'default'); } catch (e) {}
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Fix data-mode on dark stylesheet so toggleBodyColorMode works correctly
+  var darkSheet = document.querySelector('link.quarto-color-scheme.quarto-color-alternate#quarto-bootstrap');
+  if (darkSheet) darkSheet.setAttribute('data-mode', 'dark');
+
+  // Restore color scheme across page loads
+  if (window.location.protocol === 'file:') {
+    var saved = getParam('theme');
+    if (!saved) {
+      try { saved = window.localStorage.getItem('quarto-color-scheme') === 'alternate' ? 'dark' : null; } catch (e) {}
+    }
+    if (saved === 'dark' && !isDarkMode()) {
+      window.quartoToggleColorScheme();
+    }
+    var origToggle = window.quartoToggleColorScheme;
+    window.quartoToggleColorScheme = function () {
+      origToggle();
+      persistTheme(isDarkMode());
+    };
+    // Intercept internal links to carry theme
+    document.addEventListener('click', function (e) {
+      var link = e.target.closest('a');
+      if (!link || !link.href) return;
+      try {
+        var url = new URL(link.href);
+        if (url.hostname === '' || url.hostname === window.location.hostname || url.protocol === 'file:' || url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+          var cur = getParam('theme');
+          if (cur) { url.searchParams.set('theme', cur); link.href = url.toString(); }
+        }
+      } catch (e) {}
+    }, true);
+  }
+  // TOC scrollspy
+  var toc = document.querySelector("nav.toc-active");
+  if (!toc) return;
+  var links = toc.querySelectorAll("a[data-scroll-target]");
+  if (!links.length) return;
+  var sections = [];
+  links.forEach(function (link) {
+    var target = link.getAttribute("data-scroll-target");
+    if (target && target.startsWith("#")) {
+      var el = document.getElementById(decodeURI(target.slice(1)));
+      if (el) sections.push({ link: link, el: el });
+    }
+  });
+  var margin = 120;
+  function update() {
+    var y = window.pageYOffset;
+    var active = -1;
+    for (var i = 0; i < sections.length; i++) {
+      var top = sections[i].el.getBoundingClientRect().top + window.pageYOffset;
+      if (y >= top - margin) active = i;
+    }
+    if (active < 0 && sections.length > 0) active = 0;
+    links.forEach(function (l) { l.classList.remove("active"); });
+    if (active >= 0) sections[active].link.classList.add("active");
+  }
+  window.addEventListener("scroll", update, { passive: true });
+  update();
+});
+</script>

@@ -1,4 +1,5 @@
 /.quarto/
 .DS_Store
+.antigravitycli/
 
 **/*.quarto_ipynb

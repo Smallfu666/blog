@@ -108,6 +108,8 @@ The system places expert replicas across GPUs so token load is balanced. The pap
 
 This case is database-adjacent rather than classical query optimization. The system runs LLM inference row by row, so if adjacent prompts share prefixes, KV-cache reuse improves. The goal is to reorder rows and fields so prefix hit rate stays high while reordering runtime stays low.
 
+For example, if two adjacent rows both start with the same instruction and share fields like product category or review template, the LLM may reuse more prefix KV cache. The goal is not to change the query result. The goal is to arrange the table so that the prompts become cheaper to execute.
+
 ![Figure 6. LLM-SQL QuickGreedy baseline and evolved policy.](images/fig6_llmsql.png)
 
 What I take from this case is that ADRS is not always inventing a new algorithm. Sometimes it is finding a cheaper implementation of a heuristic that already made sense.
@@ -115,6 +117,16 @@ What I take from this case is that ADRS is not always inventing a new algorithm.
 ### Transaction Scheduling: reorder transactions to reduce conflicts
 
 This is the most interesting case to me because it shows both promise and limitation. The online setting rediscovers SMF, and the paper explicitly treats that as likely contamination. The offline setting is more interesting: once the constraints change, the search finds a heavier O(n^2) greedy construction with pair-swap hill climbing and random restarts.
+
+For a toy workload, imagine three transactions:
+
+- `T1` writes hot key `A`
+- `T2` touches only `B`
+- `T3` writes hot key `A`
+
+If the scheduler places `T1` and `T3` back-to-back, the hot key is hit twice in a row. A better order inserts `T2` between them so the conflict pressure is lower.
+
+SMF is a greedy policy: at each step it samples candidate transactions and appends the one that increases makespan the least.
 
 ![Figure 7. Online SMF on the left; offline evolved policy on the right.](images/fig7_transaction.jpg)
 
@@ -167,7 +179,7 @@ ADRS does not make systems research automatic. It makes solution generation chea
 
 The researcher still has to decide which hill matters, and whether the altitude meter is real.
 
-## Method note
+## Workflow note: AI-assisted paper reading
 
 I used AI tools to help organize this note and turn scattered reading questions into a structured outline. The screenshot below is a workflow artifact, not evidence from the paper itself.
 
