@@ -7,69 +7,6 @@
     "text": "About\nI am Han-Yin Chang, an M.S. student in Computer Science at National Tsing Hua University and a research assistant at the National Center for High-performance Computing (NCHC), Biomedical Information and Imaging Department.\nMy work focuses on GPU systems, database systems, and high-performance computing. I am currently studying precision-aware GPU analytical scans, where queries read only the data precision they need to trade accuracy for throughput.\nAt NCHC, I am also exposed to biomedical AI and HPC applications, which gives me a practical systems setting for thinking about GPU computing, profiling, and scalable workloads.\nThis blog is my public research notebook. I write about systems papers, experiment logs, GPU/database research, and engineering lessons learned from building and profiling real code.\nGitHub: Smallfu666"
   },
   {
-    "objectID": "posts/gpu-depreciation-strategies-cn/index.html",
-    "href": "posts/gpu-depreciation-strategies-cn/index.html",
-    "title": "GPU 折舊策略：資產生命週期優化指南",
-    "section": "",
-    "text": "Microsoft 的 Satya Nadella 一句話點出了關鍵：「我不想被單一世代 GPU 卡住四到五年的折舊。」單顆 GPU 要價五萬美元以上，而 NVIDIA 每 18–24 個月就推出新架構。折舊策略選錯，可能讓整個 AI 基礎設施的財務模型從根本傾斜。"
-  },
-  {
-    "objectID": "posts/gpu-depreciation-strategies-cn/index.html#為什麼-gpu-折舊是個大問題",
-    "href": "posts/gpu-depreciation-strategies-cn/index.html#為什麼-gpu-折舊是個大問題",
-    "title": "GPU 折舊策略：資產生命週期優化指南",
-    "section": "",
-    "text": "Microsoft 的 Satya Nadella 一句話點出了關鍵：「我不想被單一世代 GPU 卡住四到五年的折舊。」單顆 GPU 要價五萬美元以上，而 NVIDIA 每 18–24 個月就推出新架構。折舊策略選錯，可能讓整個 AI 基礎設施的財務模型從根本傾斜。"
-  },
-  {
-    "objectID": "posts/gpu-depreciation-strategies-cn/index.html#hyperscalers-怎麼做",
-    "href": "posts/gpu-depreciation-strategies-cn/index.html#hyperscalers-怎麼做",
-    "title": "GPU 折舊策略：資產生命週期優化指南",
-    "section": "Hyperscalers 怎麼做",
-    "text": "Hyperscalers 怎麼做\nAmazon、Microsoft、Google 已先後將伺服器折舊年限從 3–4 年延長至 6 年，Meta 則保守地停在 5 年。這波集體延長估計為 hyperscalers 省下每年約 180 億美元的折舊費用——從 390 億降到 210 億，降幅達 46%。\n但這種會計處理到底反映經濟現實，還是只是在做帳？業界仍在激烈辯論。"
-  },
-  {
-    "objectID": "posts/gpu-depreciation-strategies-cn/index.html#價值-cascade-理論",
-    "href": "posts/gpu-depreciation-strategies-cn/index.html#價值-cascade-理論",
-    "title": "GPU 折舊策略：資產生命週期優化指南",
-    "section": "價值 Cascade 理論",
-    "text": "價值 Cascade 理論\nGPU 的使用價值隨時間自然流動，形成一個 cascade：\n\n第 1–2 年（訓練）：最新世代 GPU 跑最先進的模型訓練，價值最高。\n第 3–4 年（生產推理）：新一代接手訓練後，前代 GPU 轉做即時推理，效能仍足夠。\n第 5–6 年（批次處理）：最後階段支援批次分析、成本敏感的推理工作負載。\n\nCoreWeave 的 CEO Michael Intrator 提供了實際證據：A100（2020 年發表）至今推理工作負載仍被訂滿，H100 到期合約重簽價格維持在原價的 95%。"
-  },
-  {
-    "objectID": "posts/gpu-depreciation-strategies-cn/index.html#三種折舊策略",
-    "href": "posts/gpu-depreciation-strategies-cn/index.html#三種折舊策略",
-    "title": "GPU 折舊策略：資產生命週期優化指南",
-    "section": "三種折舊策略",
-    "text": "三種折舊策略\n\n\n\n策略\n年限\n適合誰\n\n\n\n\n保守型\n3 年\nAI 工作負載壽命不明確、風險規避的組織\n\n\n延伸型\n6 年\n工作負載多樣（訓練 + 推理）、有二級市場通道\n\n\n混合前置型\n前 2 年折 50–60%\n想在稅務效率與保守財報之間取得平衡"
-  },
-  {
-    "objectID": "posts/gpu-depreciation-strategies-cn/index.html#更新週期建議",
-    "href": "posts/gpu-depreciation-strategies-cn/index.html#更新週期建議",
-    "title": "GPU 折舊策略：資產生命週期優化指南",
-    "section": "更新週期建議",
-    "text": "更新週期建議\n\n訓練叢集：2–3 年換代，保持競爭力\n生產推理：4–5 年，或等到效率提升超過換代成本\n開發/測試：5–6 年以上，接收生產環境淘汰的硬體"
-  },
-  {
-    "objectID": "posts/gpu-depreciation-strategies-cn/index.html#稅務優化",
-    "href": "posts/gpu-depreciation-strategies-cn/index.html#稅務優化",
-    "title": "GPU 折舊策略：資產生命週期優化指南",
-    "section": "稅務優化",
-    "text": "稅務優化\n\nSection 179（2025 年）：最高可扣抵 122 萬美元\nBonus depreciation：2025 年為 60%（從 2022 年的 100% 逐步下降）"
-  },
-  {
-    "objectID": "posts/gpu-depreciation-strategies-cn/index.html#總結",
-    "href": "posts/gpu-depreciation-strategies-cn/index.html#總結",
-    "title": "GPU 折舊策略：資產生命週期優化指南",
-    "section": "總結",
-    "text": "總結\nGPU 折舊是 AI 密集組織最重要的財務決策之一。Hyperscalers 用六年折舊賭的是價值 cascade 模型會成立，但一般組織必須根據自己的工作負載組合和二級市場能力來判斷。混合策略通常提供最大的靈活性。核心原則是：用營運數據說話，而不是只靠會計理論。"
-  },
-  {
-    "objectID": "posts/gpu-depreciation-strategies-cn/index.html#參考資料",
-    "href": "posts/gpu-depreciation-strategies-cn/index.html#參考資料",
-    "title": "GPU 折舊策略：資產生命週期優化指南",
-    "section": "參考資料",
-    "text": "參考資料\n\nCNBC. “The question everyone in AI is asking: How long before a GPU depreciates?” November 14, 2025.\nSiliconANGLE. “Resetting GPU depreciation.” November 22, 2025.\nMBI Deep Dives. “Big Tech’s Deteriorating Earnings Quality.” 2025."
-  },
-  {
     "objectID": "posts/adrs-systems-research-talk/index.html",
     "href": "posts/adrs-systems-research-talk/index.html",
     "title": "Reading “Barbarians at the Gate”: AI-Driven Research for Systems",
@@ -144,6 +81,6 @@
     "href": "index.html",
     "title": "Blog",
     "section": "",
-    "text": "GPU 折舊策略：資產生命週期優化指南\n\n\n從 hyperscaler 的六年折舊到 CoreWeave 的價值 Cascade，AI 基礎設施的財務規劃正在重塑。\n\n\n\n\n\n2026-05-28\n\n\nHan-Yin Chang\n\n\n\n\n\n\n\n\n\n\n\n\nReading “Barbarians at the Gate”: AI-Driven Research for Systems\n\n\nA personal paper note on ADRS, evaluators, and systems research workflow.\n\n\n\n\n\n2026-05-26\n\n\nHan-Yin Chang\n\n\n\n\n\nNo matching items"
+    "text": "Reading “Barbarians at the Gate”: AI-Driven Research for Systems\n\n\nA personal paper note on ADRS, evaluators, and systems research workflow.\n\n\n\n\n\n2026-05-26\n\n\nHan-Yin Chang\n\n\n\n\n\nNo matching items"
   }
 ]

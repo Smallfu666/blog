@@ -1,0 +1,64 @@
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const tocLinks = document.querySelectorAll("#TOC a[data-scroll-target]");
+  if (tocLinks.length === 0) return;
+
+  const sections = [];
+  tocLinks.forEach(link => {
+    const target = link.getAttribute("data-scroll-target");
+    if (target && target.startsWith("#")) {
+      const id = decodeURIComponent(target.slice(1));
+      const section = document.getElementById(id);
+      if (section) {
+        // Target the actual heading element (h1-h6) which represents the visual start of the section
+        const heading = section.querySelector("h1, h2, h3, h4, h5, h6") || section;
+        sections.push({ link, heading });
+      }
+    }
+  });
+
+  const updateActiveTOC = () => {
+    const targetY = 110; // Trigger line just below the 80px sticky navbar
+    let activeIndex = -1;
+
+    // Find the last heading in the document flow that has scrolled past targetY
+    for (let i = 0; i < sections.length; i++) {
+      const rect = sections[i].heading.getBoundingClientRect();
+      if (rect.top <= targetY) {
+        activeIndex = i;
+      } else {
+        // Headings are ordered; once we find one below the line, we can stop
+        break;
+      }
+    }
+
+    // Default to the first section if we are near the top of the page
+    if (activeIndex === -1 && sections.length > 0) {
+      activeIndex = 0;
+    }
+
+    if (activeIndex > -1) {
+      const activeSection = sections[activeIndex];
+      tocLinks.forEach(l => l.classList.remove("active"));
+      activeSection.link.classList.add("active");
+    }
+  };
+
+  // Observe section entry/exit to trigger updates efficiently
+  const observer = new IntersectionObserver(() => {
+    updateActiveTOC();
+  }, {
+    root: null,
+    rootMargin: "0px 0px -10% 0px",
+    threshold: 0
+  });
+
+  sections.forEach(s => observer.observe(s.heading));
+
+  // Also hook into scroll events for instant, perfectly smooth visual response on click/scroll
+  window.addEventListener("scroll", updateActiveTOC, { passive: true });
+  
+  // Initial run
+  updateActiveTOC();
+});
+</script>
